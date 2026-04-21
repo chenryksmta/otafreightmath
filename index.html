@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>From Survival to Advantage — Chris Henry, KSM Transport Advisors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --fm-navy:#0A2463;
+  --fm-blue:#2C78C9;
+  --fm-orange:#E26E17;
+  --fm-black:#000000;
+  --fm-gray:#6E6E6E;
+  --fm-light-blue:#96BCE4;
+  --fm-mid-blue:#8592B1;
+  --fm-light-gray:#F5F5F5;
+  --fm-warm-gray:#DCDAD8;
+  --fm-light-orange:#F1B78B;
+  --fm-white:#FFFFFF;
+  --serif: 'DM Sans', system-ui, sans-serif;
+  --sans: 'Public Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:#000;color:var(--fm-black);font-family:var(--sans);overflow:hidden}
+.deck{position:fixed;inset:0;overflow:hidden;background:#000}
+.slide{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:none;
+  background:var(--fm-white);
+  /* top: clears brand bar (~4vh) + gap; bottom: clears slide-num (~4vh) + gap */
+  padding:8vh 7vw 7vh;
+  overflow:hidden;
+  opacity:0;
+  transition:opacity .35s ease;
+}
+.slide.active{display:flex;flex-direction:column;opacity:1}
+.slide.dark{background:var(--fm-navy);color:var(--fm-white)}
+.slide.gradient{background:linear-gradient(135deg,var(--fm-navy) 0%,#0c1d4d 60%,#08184a 100%);color:var(--fm-white)}
+.slide.lightgray{background:var(--fm-light-gray)}
+
+/* Brand chrome */
+.brand-top{position:absolute;top:2.2vh;left:7vw;display:flex;align-items:center;gap:14px;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-blue);font-weight:700;font-family:var(--sans)}
+.brand-top.on-dark{color:var(--fm-light-blue)}
+.brand-top .dot{width:8px;height:8px;background:var(--fm-orange);border-radius:50%}
+.slide-num{position:absolute;bottom:2vh;right:7vw;font-family:var(--mono);font-size:.75rem;color:var(--fm-gray);letter-spacing:.1em}
+.slide.dark .slide-num,.slide.gradient .slide-num{color:var(--fm-light-blue);opacity:.7}
+.slide-meta{position:absolute;bottom:2vh;left:7vw;font-size:.72rem;color:var(--fm-gray);letter-spacing:.04em}
+.slide.dark .slide-meta,.slide.gradient .slide-meta{color:var(--fm-light-blue);opacity:.7}
+
+/* FreightMath logo — persistent on all slides */
+.fm-logo{position:absolute;top:1.6vh;right:7vw;z-index:10;line-height:0}
+.fm-logo img{height:32px;width:auto;object-fit:contain;opacity:.85;transition:opacity .2s}
+.fm-logo:hover img{opacity:1}
+.slide.gradient .fm-logo img,.slide.dark .fm-logo img{opacity:.8;filter:brightness(0) invert(1)}
+/* Title slide — larger, lower, white reversed */
+.title-slide .fm-logo{top:auto;bottom:8vh;right:7vw}
+.title-slide .fm-logo img{height:56px;opacity:1;filter:brightness(0) invert(1)}
+
+/* Typography */
+h1,h2,h3,h4{font-family:var(--serif);margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.05}
+h1{font-size:5.5vw;font-weight:300}
+h1 strong{font-weight:900;color:var(--fm-orange)}
+h2{font-size:3.1vw;font-weight:700;color:var(--fm-navy)}
+.dark h2,.gradient h2{color:var(--fm-white)}
+h3{font-size:1.45rem;color:var(--fm-blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.dark h3,.gradient h3{color:var(--fm-light-blue)}
+h4{font-size:1rem;text-transform:uppercase;letter-spacing:.18em;color:var(--fm-gray);font-weight:700}
+p{font-family:var(--sans);font-size:1rem;line-height:1.55;margin:0;color:var(--fm-black)}
+.dark p,.gradient p{color:var(--fm-warm-gray)}
+.lede{font-size:1.25rem;font-weight:400;color:var(--fm-gray);max-width:60ch}
+.dark .lede,.gradient .lede{color:var(--fm-light-blue)}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.22em;color:var(--fm-orange);font-weight:700;margin-bottom:.9rem;display:inline-block}
+
+/* Title slide */
+.title{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative}
+.title h1{font-size:6.2vw;line-height:1.04;max-width:90%}
+.title .sub{margin-top:2.5rem;font-size:1.5rem;color:var(--fm-light-blue);font-family:var(--sans);font-weight:400;letter-spacing:.04em}
+.title .author{margin-top:3rem;display:flex;align-items:center;gap:18px}
+.title .author .who{display:flex;flex-direction:column}
+.title .author .who .n{font-weight:700;color:var(--fm-white);font-size:1.05rem;letter-spacing:.02em}
+.title .author .who .r{color:var(--fm-light-blue);font-size:.9rem;letter-spacing:.1em;text-transform:uppercase}
+.title .stamp{position:absolute;left:7vw;bottom:8vh;text-align:left;color:var(--fm-light-blue);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.6}
+.title .stamp strong{color:var(--fm-orange)}
+
+/* Constellation animation */
+.constellation{position:absolute;inset:0;pointer-events:none;opacity:.55}
+.constellation circle{fill:var(--fm-blue)}
+.constellation circle.acc{fill:var(--fm-orange)}
+.constellation line{stroke:var(--fm-blue);stroke-width:.4;opacity:.35}
+
+/* Big stat slides */
+.big-stat{font-family:var(--serif);font-size:18vw;line-height:.9;font-weight:900;letter-spacing:-.04em;color:var(--fm-navy)}
+.dark .big-stat,.gradient .big-stat{color:var(--fm-orange)}
+.big-stat .unit{font-size:.25em;color:var(--fm-gray);font-weight:400}
+.stat-label{font-family:var(--sans);text-transform:uppercase;letter-spacing:.2em;color:var(--fm-orange);font-weight:700;font-size:.85rem;margin-bottom:1rem}
+
+/* Two-column compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2vw;margin-top:1.5vh;flex:1}
+.compare .col{padding:2.5vh 2.5vw;border-top:5px solid var(--fm-warm-gray);background:var(--fm-light-gray)}
+.compare .col.bad{border-top-color:var(--fm-orange);background:#fff3e9}
+.compare .col.good{border-top-color:var(--fm-blue);background:#eaf3fc}
+.compare .col h4{margin-bottom:1.5rem;color:var(--fm-gray)}
+.compare .col.good h4{color:var(--fm-blue)}
+.compare .col.bad h4{color:var(--fm-orange)}
+.compare ul{list-style:none;padding:0;margin:0;font-family:var(--sans)}
+.compare li{padding:.55rem 0;font-size:1rem;border-bottom:1px solid var(--fm-warm-gray);display:flex;align-items:flex-start;gap:.6rem}
+.compare li:last-child{border-bottom:none}
+.compare li:before{content:"";width:6px;height:6px;background:var(--fm-blue);border-radius:50%;margin-top:.55rem;flex-shrink:0}
+.compare .bad li:before{background:var(--fm-orange)}
+
+/* Cost compare */
+.cost-compare{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:1.5vh;flex:1;border:1px solid var(--fm-warm-gray)}
+.cost-compare .cell{padding:2.5vh 2vw;display:flex;flex-direction:column;justify-content:space-between}
+.cost-compare .cell.left{background:var(--fm-light-gray)}
+.cost-compare .cell.right{background:#fff3e9}
+.cost-compare .price{font-family:var(--serif);font-size:6vw;font-weight:900;line-height:1}
+.cost-compare .left .price{color:var(--fm-blue)}
+.cost-compare .right .price{color:var(--fm-orange)}
+.cost-compare .label{text-transform:uppercase;letter-spacing:.2em;font-weight:700;font-size:.8rem;margin-bottom:1rem;color:var(--fm-gray)}
+.gap-callout{margin-top:2.5vh;background:var(--fm-navy);color:var(--fm-white);padding:2.5vh 3vw;text-align:center;font-family:var(--serif);font-size:1.6rem;font-weight:700}
+.gap-callout strong{color:var(--fm-orange);font-size:2.2rem}
+
+/* HHI chart */
+.hhi-wrap{display:grid;grid-template-columns:2fr 1fr;gap:3vw;flex:1;align-items:center}
+.hhi-bars{display:flex;flex-direction:column;gap:1rem;font-family:var(--sans)}
+.hhi-bar{display:grid;grid-template-columns:160px 1fr 90px;align-items:center;gap:1rem}
+.hhi-bar .name{font-weight:600;font-size:.95rem;color:var(--fm-navy)}
+.hhi-bar .track{height:28px;background:var(--fm-light-gray);position:relative;overflow:hidden}
+.hhi-bar .fill{position:absolute;top:0;left:0;bottom:0;background:var(--fm-blue);width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+.hhi-bar.tl .fill{background:var(--fm-orange)}
+.hhi-bar .val{font-family:var(--mono);font-size:.95rem;color:var(--fm-navy);font-weight:700;text-align:right}
+.threshold-line{margin-top:1rem;border-top:2px dashed var(--fm-orange);padding-top:.6rem;font-size:.8rem;color:var(--fm-orange);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.hhi-side{padding:2vh 1.8vw;background:var(--fm-navy);color:var(--fm-white)}
+.hhi-side .num{font-family:var(--serif);font-size:5vw;font-weight:900;color:var(--fm-orange);line-height:1}
+.hhi-side .lbl{margin-top:.5rem;color:var(--fm-light-blue);font-size:.95rem;text-transform:uppercase;letter-spacing:.15em;font-weight:700}
+.hhi-side p{margin-top:1.5rem;color:var(--fm-warm-gray);font-size:.95rem;line-height:1.5}
+
+/* Enforcement cards */
+.enforce-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:1vh 1.5vw;margin-top:1.5vh;flex:1}
+.enforce-card{background:var(--fm-white);border-left:4px solid var(--fm-orange);padding:2vh 1.5vw;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.gradient .enforce-card,.dark .enforce-card{background:rgba(255,255,255,.04);border-left-color:var(--fm-orange);color:var(--fm-white)}
+.enforce-card:hover{background:var(--fm-orange);color:var(--fm-white);border-left-color:var(--fm-white)}
+.enforce-card .num{position:absolute;top:.6rem;right:1rem;font-family:var(--mono);font-size:.7rem;color:var(--fm-gray);letter-spacing:.1em}
+.enforce-card:hover .num{color:var(--fm-white);opacity:.8}
+.enforce-card h5{font-family:var(--serif);font-size:1.2rem;font-weight:900;margin:0 0 .4rem;color:var(--fm-navy);text-transform:uppercase;letter-spacing:.05em}
+.gradient .enforce-card h5,.dark .enforce-card h5{color:var(--fm-white)}
+.enforce-card:hover h5{color:var(--fm-white)}
+.enforce-card .stat{font-family:var(--mono);font-size:.85rem;color:var(--fm-orange);font-weight:700;margin-bottom:.5rem}
+.enforce-card:hover .stat{color:var(--fm-white)}
+.enforce-card .desc{font-size:.85rem;line-height:1.5;color:var(--fm-gray)}
+.gradient .enforce-card .desc,.dark .enforce-card .desc{color:var(--fm-light-blue)}
+.enforce-card:hover .desc{color:var(--fm-white)}
+
+/* Math of removal */
+.removal-grid{display:grid;grid-template-columns:1fr 1fr;gap:3vw;flex:1;align-items:center}
+.removal-stack{display:flex;flex-direction:column;gap:.8rem}
+.r-item{display:grid;grid-template-columns:1fr 90px;align-items:center;gap:1rem;padding:.8rem 1rem;background:var(--fm-light-gray);border-left:4px solid var(--fm-blue)}
+.r-item .lbl{font-size:.95rem;font-weight:600;color:var(--fm-navy)}
+.r-item .val{font-family:var(--mono);font-weight:700;color:var(--fm-orange);text-align:right}
+.r-total{margin-top:1.5rem;background:var(--fm-navy);color:var(--fm-white);padding:2rem;text-align:center}
+.r-total .pct{font-family:var(--serif);font-size:5vw;font-weight:900;color:var(--fm-orange);line-height:1}
+.r-total .lbl{margin-top:.5rem;font-size:.95rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700}
+.r-total .drivers{margin-top:1rem;font-family:var(--mono);color:var(--fm-warm-gray);font-size:1rem}
+
+/* Calculator */
+.calc-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:2.5vw;flex:1;margin-top:1.5vh}
+.calc-inputs{padding:3vh 2.5vw;background:var(--fm-light-gray);border-top:5px solid var(--fm-blue)}
+.calc-inputs h4{color:var(--fm-blue);margin-bottom:2rem}
+.input-row{margin-bottom:2rem}
+.input-row label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem;font-size:.85rem;color:var(--fm-gray);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.input-row label .v{font-family:var(--mono);color:var(--fm-orange);font-size:1.1rem;font-weight:700;letter-spacing:0;text-transform:none}
+.input-row input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:24px}
+.input-row input[type=range]::-webkit-slider-runnable-track{background:var(--fm-warm-gray);height:4px;border-radius:0}
+.input-row input[type=range]::-moz-range-track{background:var(--fm-warm-gray);height:4px;border-radius:0}
+.input-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;background:var(--fm-orange);border-radius:50%;margin-top:-9px;cursor:pointer;border:3px solid var(--fm-white);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.input-row input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--fm-orange);border-radius:50%;cursor:pointer;border:3px solid var(--fm-white);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.input-row .ticks{display:flex;justify-content:space-between;margin-top:.4rem;font-family:var(--mono);font-size:.7rem;color:var(--fm-gray)}
+.calc-output{background:var(--fm-navy);color:var(--fm-white);padding:3vh 2.5vw;display:flex;flex-direction:column;justify-content:center}
+.calc-output .out-lbl{font-size:.8rem;text-transform:uppercase;letter-spacing:.2em;color:var(--fm-light-blue);font-weight:700;margin-bottom:.6rem}
+.calc-output .out-val{font-family:var(--serif);font-size:5.5vw;font-weight:900;color:var(--fm-orange);line-height:1;letter-spacing:-.02em}
+.calc-output .out-sub{margin-top:1rem;color:var(--fm-warm-gray);font-size:.95rem;line-height:1.5}
+.calc-output .breakdown{margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(150,188,228,.3)}
+.calc-output .breakdown .row{display:flex;justify-content:space-between;padding:.5rem 0;font-family:var(--mono);font-size:.85rem;color:var(--fm-light-blue)}
+.calc-output .breakdown .row .v{color:var(--fm-white);font-weight:700}
+
+/* Lesson cards */
+.lesson{display:grid;grid-template-columns:auto 1fr;gap:2.5vw;align-items:start;flex:1;margin-top:1.5vh}
+.lesson .num-box{font-family:var(--serif);font-size:16vw;font-weight:900;line-height:.85;color:var(--fm-orange);letter-spacing:-.04em}
+.lesson .body h2{font-size:3.8vw;margin-bottom:1.4rem}
+.lesson .body .subhead{color:var(--fm-blue);font-size:1.5rem;font-weight:600;margin-bottom:1.3rem;font-family:var(--serif);font-style:italic}
+.lesson .body p{font-size:1.15rem;margin-bottom:1.1rem;max-width:62ch}
+.lesson .body .pull{margin-top:1.5rem;padding:1.3rem 2rem;background:var(--fm-light-gray);border-left:4px solid var(--fm-orange);font-family:var(--serif);font-size:1.25rem;font-weight:700;color:var(--fm-navy);line-height:1.4}
+.dark .lesson .body .pull,.gradient .lesson .body .pull{background:rgba(255,255,255,.06);color:var(--fm-white);border-left-color:var(--fm-orange)}
+
+/* Three doors */
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5vw;flex:1;margin-top:1.5vh}
+.door{background:var(--fm-white);border-top:6px solid var(--fm-blue);padding:2vh 1.5vw;display:flex;flex-direction:column;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.door:hover{background:var(--fm-navy);color:var(--fm-white);transform:translateY(-6px);border-top-color:var(--fm-orange)}
+.door .key{font-family:var(--serif);font-size:7vw;font-weight:900;color:var(--fm-light-gray);position:absolute;top:-1vh;right:1.5vw;line-height:1;transition:color .3s}
+.door:hover .key{color:rgba(226,110,23,.25)}
+.door h3{position:relative;color:var(--fm-orange);margin-bottom:1.5rem;font-size:2rem;letter-spacing:.05em;font-family:var(--serif)}
+.door h3:after{content:"";display:block;width:40px;height:3px;background:var(--fm-orange);margin-top:.6rem}
+.door:hover h3{color:var(--fm-orange)}
+.door ul{list-style:none;padding:0;margin:0;flex:1}
+.door li{padding:.6rem 0;border-bottom:1px solid var(--fm-warm-gray);font-size:.95rem;color:var(--fm-navy);position:relative}
+.door:hover li{color:var(--fm-warm-gray);border-bottom-color:rgba(255,255,255,.15)}
+.door li:before{content:"→ ";color:var(--fm-orange);font-weight:700;margin-right:.4rem}
+
+/* Timeline */
+.timeline{position:relative;flex:1;display:flex;align-items:center;margin-top:2vh}
+.timeline-track{height:2px;background:var(--fm-warm-gray);position:absolute;left:0;right:0;top:50%}
+.tl-fill{height:2px;background:linear-gradient(90deg,var(--fm-blue) 0%,var(--fm-orange) 100%);position:absolute;left:0;top:50%;width:100%}
+.tl-stops{display:flex;justify-content:space-between;width:100%;position:relative;z-index:2}
+.tl-stop{flex:1;padding:0 1vw;text-align:center}
+.tl-stop .dot{width:24px;height:24px;background:var(--fm-blue);border-radius:50%;margin:0 auto 1.5rem;border:5px solid var(--fm-white);box-shadow:0 0 0 2px var(--fm-blue)}
+.tl-stop:nth-child(2) .dot{background:var(--fm-orange);box-shadow:0 0 0 2px var(--fm-orange)}
+.tl-stop:nth-child(3) .dot{background:var(--fm-navy);box-shadow:0 0 0 2px var(--fm-navy)}
+.tl-stop .yr{font-family:var(--mono);font-size:.85rem;color:var(--fm-gray);letter-spacing:.1em;font-weight:700;margin-bottom:.4rem}
+.tl-stop h4{color:var(--fm-navy);margin-bottom:.6rem;letter-spacing:.05em}
+.tl-stop p{font-size:.9rem;color:var(--fm-gray);max-width:24ch;margin:0 auto;line-height:1.5}
+
+/* AI grid */
+.ai-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2vw;margin-top:1.5vh;flex:1}
+.ai-card{background:rgba(255,255,255,.05);border-top:3px solid var(--fm-orange);padding:1.8vh 1vw;display:flex;flex-direction:column}
+.ai-card .icon{width:36px;height:36px;background:var(--fm-orange);color:var(--fm-white);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1.1rem;font-weight:900;margin-bottom:.9rem}
+.ai-card h5{font-family:var(--serif);color:var(--fm-white);font-size:1.1rem;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.05em}
+.ai-card p{color:var(--fm-light-blue);font-size:.85rem;line-height:1.5}
+
+/* Rate-Haul Ratio chart */
+.rhr-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:2.5vw;flex:1;margin-top:1.5vh}
+.rhr-chart{background:var(--fm-white);padding:1.5vh 1vw;position:relative;height:100%;min-height:40vh}
+.rhr-side h3{margin-bottom:1.5rem}
+.rhr-side .stat-card{padding:1.5rem;background:var(--fm-light-gray);border-left:4px solid var(--fm-orange);margin-bottom:1rem}
+.rhr-side .stat-card .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--fm-gray);font-weight:700;margin-bottom:.5rem}
+.rhr-side .stat-card .v{font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--fm-navy)}
+.rhr-side .stat-card .s{font-size:.9rem;color:var(--fm-gray);margin-top:.5rem}
+
+/* Network discipline calculator */
+.nd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5vw;flex:1;margin-top:1.5vh}
+.nd-controls{padding:3vh 2.5vw;background:var(--fm-light-gray)}
+.nd-results{padding:3vh 2.5vw;background:var(--fm-navy);color:var(--fm-white)}
+.nd-bar-wrap{margin-top:1rem}
+.nd-bar-row{margin-bottom:1.5rem}
+.nd-bar-row .lbl{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;color:var(--fm-light-blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.nd-bar-row .lbl .v{color:var(--fm-orange);font-family:var(--mono);font-size:1.1rem}
+.nd-bar-row .track{height:14px;background:rgba(255,255,255,.1);position:relative}
+.nd-bar-row .fill{position:absolute;left:0;top:0;bottom:0;background:var(--fm-blue);transition:width .4s}
+.nd-bar-row.in .fill{background:var(--fm-orange)}
+.nd-impact{margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(150,188,228,.3)}
+.nd-impact .out-lbl{font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--fm-light-blue);font-weight:700;margin-bottom:.5rem}
+.nd-impact .out-val{font-family:var(--serif);font-size:4.5vw;font-weight:900;color:var(--fm-orange);line-height:1}
+
+/* Closing */
+.close{display:flex;flex-direction:column;justify-content:center;height:100%}
+.close p{color:var(--fm-warm-gray);font-size:1.25rem;line-height:1.6;max-width:62ch;margin-bottom:1.2rem}
+.close p strong{color:var(--fm-white);font-weight:700}
+.close .punch{margin-top:2rem;font-family:var(--serif);font-size:4.5vw;font-weight:900;color:var(--fm-white);line-height:1.05}
+.close .punch span{color:var(--fm-orange)}
+.close .signoff{margin-top:2rem;font-family:var(--mono);color:var(--fm-light-blue);font-size:.85rem;letter-spacing:.15em;text-transform:uppercase}
+
+/* Hero stat slide */
+.hero-stat{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;height:100%}
+.hero-stat .meta{font-family:var(--sans);text-transform:uppercase;letter-spacing:.2em;color:var(--fm-blue);font-weight:700;font-size:.95rem;margin-bottom:1.2rem}
+.gradient .hero-stat .meta,.dark .hero-stat .meta{color:var(--fm-light-blue)}
+.hero-stat .num{font-family:var(--serif);font-size:20vw;font-weight:900;line-height:.85;color:var(--fm-orange);letter-spacing:-.05em}
+.hero-stat .desc{margin-top:1.5rem;font-size:1.25rem;color:var(--fm-gray);max-width:60ch;line-height:1.5}
+.gradient .hero-stat .desc,.dark .hero-stat .desc{color:var(--fm-light-blue)}
+
+/* Quote slide */
+.quote{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;max-width:80%}
+.quote .qmark{font-family:var(--serif);font-size:14vw;line-height:.5;color:var(--fm-orange);font-weight:900;margin-bottom:-1.5vh}
+.quote blockquote{font-family:var(--serif);font-size:4.5vw;line-height:1.15;font-weight:300;margin:0;color:var(--fm-white)}
+.quote blockquote em{font-style:italic;color:var(--fm-light-blue);font-weight:300}
+.quote cite{margin-top:2rem;font-style:normal;font-family:var(--sans);color:var(--fm-light-blue);font-size:1rem;letter-spacing:.15em;text-transform:uppercase}
+
+/* KYN columns */
+.kyn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5vw;margin-top:1.5vh;flex:1}
+.kyn-col{padding:3vh 2vw;background:var(--fm-white);border-top:5px solid var(--fm-orange);position:relative}
+.kyn-col .kn{position:absolute;top:1rem;right:1.5rem;font-family:var(--mono);font-size:.7rem;color:var(--fm-gray);letter-spacing:.1em;font-weight:700}
+.kyn-col h3{margin-bottom:1rem;color:var(--fm-navy);font-family:var(--serif);text-transform:none;letter-spacing:0;font-size:1.6rem}
+.kyn-col h3 .stamp{display:block;font-size:.7rem;color:var(--fm-orange);text-transform:uppercase;letter-spacing:.2em;margin-bottom:.4rem;font-family:var(--sans)}
+.kyn-col p{font-size:.95rem;line-height:1.55;color:var(--fm-gray)}
+.kyn-col .pill{display:inline-block;margin-top:1.2rem;padding:.4rem .8rem;background:var(--fm-navy);color:var(--fm-white);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+
+/* Nav controls */
+.nav-controls{position:fixed;bottom:1.5vh;right:1.5vw;display:flex;gap:.4rem;z-index:100}
+.nav-btn{width:38px;height:38px;background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:700;font-size:1rem;backdrop-filter:blur(8px);transition:all .2s}
+.nav-btn:hover{background:var(--fm-orange);border-color:var(--fm-orange)}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--fm-orange);z-index:100;transition:width .35s ease;width:0}
+.helper{position:fixed;bottom:1.5vh;left:1.5vw;font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.4);letter-spacing:.1em;z-index:100;text-transform:uppercase}
+
+/* Balance sheet slide */
+.bs-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:2.5vw;margin-top:2vh;flex:1}
+.bs-checklist{display:flex;flex-direction:column;gap:.9rem}
+.bs-item{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;padding:1.1rem 1.2rem;background:var(--fm-light-gray);border-left:4px solid var(--fm-blue)}
+.bs-item .bs-num{font-family:var(--mono);font-weight:700;color:var(--fm-orange);font-size:.9rem;letter-spacing:.1em;padding-top:.1rem}
+.bs-item .bs-text{font-size:.95rem;line-height:1.5;color:var(--fm-navy)}
+.bs-item .bs-text strong{color:var(--fm-navy);font-weight:700}
+.bs-item .bs-text em{color:var(--fm-gray);font-style:normal;display:block;margin-top:.25rem;font-size:.85rem}
+.bs-side{padding:3vh 2vw;background:var(--fm-navy);color:var(--fm-white);display:flex;flex-direction:column;justify-content:space-between}
+.bs-side h3{color:var(--fm-light-blue);margin-bottom:1rem}
+.bs-side .ratio{font-family:var(--serif);font-size:4.5vw;font-weight:900;color:var(--fm-orange);line-height:1;margin:1rem 0 .4rem}
+.bs-side .ratio-lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--fm-light-blue);font-weight:700}
+.bs-side .ratio-desc{margin-top:1rem;color:var(--fm-warm-gray);font-size:.9rem;line-height:1.55}
+.bs-side .divider{border-top:1px solid rgba(150,188,228,.3);margin:1.5rem 0}
+.bs-side .pull{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--fm-white);line-height:1.35}
+.bs-side .pull em{color:var(--fm-orange);font-style:normal}
+
+/* Cash is oxygen / AR counterparty */
+.cash-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5vw;flex:1;margin-top:2vh}
+.cash-col{padding:2.5vh 2vw;display:flex;flex-direction:column}
+.cash-col.dso{background:var(--fm-light-gray);border-top:5px solid var(--fm-blue)}
+.cash-col.cp{background:#fff3e9;border-top:5px solid var(--fm-orange)}
+.cash-col h3{font-size:1.4rem;text-transform:none;letter-spacing:0;color:var(--fm-navy);font-family:var(--serif);margin-bottom:.5rem}
+.cash-col .stamp{font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-orange);font-weight:700;margin-bottom:.8rem}
+.cash-col.dso .stamp{color:var(--fm-blue)}
+.cash-col p{font-size:.95rem;line-height:1.55;color:var(--fm-gray);margin-bottom:1rem}
+.cash-col ul{list-style:none;padding:0;margin:.6rem 0 0}
+.cash-col li{padding:.55rem 0;font-size:.92rem;color:var(--fm-navy);border-bottom:1px solid var(--fm-warm-gray);display:flex;gap:.5rem;align-items:flex-start}
+.cash-col li:last-child{border-bottom:none}
+.cash-col li:before{content:"→";color:var(--fm-orange);font-weight:700;flex-shrink:0}
+.cash-col .mini-stat{margin-top:auto;padding-top:1.2rem;display:flex;align-items:baseline;gap:.8rem}
+.cash-col .mini-stat .v{font-family:var(--serif);font-size:2.4rem;font-weight:900;color:var(--fm-navy);line-height:1}
+.cash-col.cp .mini-stat .v{color:var(--fm-orange)}
+.cash-col.dso .mini-stat .v{color:var(--fm-blue)}
+.cash-col .mini-stat .s{font-size:.8rem;color:var(--fm-gray);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.cash-callout{margin-top:2vh;padding:1.5vh 2vw;background:var(--fm-navy);color:var(--fm-white);text-align:center;font-family:var(--serif);font-size:1.25rem;font-weight:700}
+.cash-callout strong{color:var(--fm-orange)}
+
+/* Driver / A-player slide */
+.ap-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5vw;flex:1;margin-top:2vh}
+.ap-stack{display:flex;flex-direction:column;gap:1rem}
+.ap-card{padding:1.8vh 1.5vw;background:var(--fm-light-gray);border-left:4px solid var(--fm-blue);display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:center}
+.ap-card .tier{font-family:var(--serif);font-size:2.8rem;font-weight:900;line-height:1;letter-spacing:-.03em}
+.ap-card.a .tier{color:var(--fm-blue)}
+.ap-card.b .tier{color:var(--fm-navy)}
+.ap-card.cd .tier{color:var(--fm-orange)}
+.ap-card.cd{border-left-color:var(--fm-orange);background:#fff3e9}
+.ap-card .lbl{font-family:var(--mono);font-size:.7rem;color:var(--fm-gray);letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:.2rem}
+.ap-card h5{font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--fm-navy);margin:0 0 .3rem}
+.ap-card p{font-size:.88rem;color:var(--fm-gray);line-height:1.5}
+.ap-side{padding:3vh 2vw;background:var(--fm-navy);color:var(--fm-white);display:flex;flex-direction:column}
+.ap-side h3{color:var(--fm-light-blue);margin-bottom:1.2rem}
+.ap-side .ap-stat{margin-bottom:1.8rem}
+.ap-side .ap-stat .v{font-family:var(--serif);font-size:3.2rem;font-weight:900;color:var(--fm-orange);line-height:1}
+.ap-side .ap-stat .s{font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--fm-light-blue);font-weight:700;margin-top:.3rem}
+.ap-side .ap-stat .d{font-size:.88rem;color:var(--fm-warm-gray);margin-top:.6rem;line-height:1.5}
+.ap-side .pull{margin-top:auto;padding:1.3rem 1.5rem;background:rgba(255,255,255,.06);border-left:4px solid var(--fm-orange);font-family:var(--serif);font-weight:700;font-size:1.1rem;line-height:1.4;color:var(--fm-white)}
+
+
+/* Footer brand on light slides */
+.fm-footer{position:absolute;left:7vw;bottom:5vh;display:flex;align-items:center;gap:.6rem;font-family:var(--sans);font-size:.7rem;color:var(--fm-gray);letter-spacing:.15em;text-transform:uppercase;font-weight:700}
+.fm-footer .b{color:var(--fm-blue)}
+.fm-footer .o{color:var(--fm-orange)}
+
+/* Global overflow containment — flex:1 children must declare min-height:0 */
+.compare,.hhi-wrap,.enforce-grid,.removal-grid,.calc-wrap,.rhr-wrap,.nd-wrap,
+.cost-compare,.doors,.ai-grid,.kyn-grid,.bs-grid,.cash-wrap,.ap-wrap,.about-grid,
+.timeline{min-height:0}
+
+/* Reveal animations on slide enter */
+.slide.active .reveal{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.slide.active .reveal-2{animation:rise .7s cubic-bezier(.2,.7,.2,1) .15s both}
+.slide.active .reveal-3{animation:rise .7s cubic-bezier(.2,.7,.2,1) .3s both}
+.slide.active .reveal-4{animation:rise .7s cubic-bezier(.2,.7,.2,1) .45s both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* About slide */
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:2vw;flex:1;min-height:0;margin-top:1vh}
+.about-left{display:flex;flex-direction:column;gap:.8rem;min-height:0;overflow:hidden}
+.about-block{padding:1rem 1.2rem;border-left:4px solid var(--fm-blue);flex-shrink:0}
+.about-block.ksmta{background:#fff;border-left-color:var(--fm-navy)}
+.about-block.fm{background:#eaf3fc;border-left-color:var(--fm-blue)}
+.about-block.alliance{background:#fff3e9;border-left-color:var(--fm-orange)}
+.about-block .ab-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:.3rem}
+.about-block.ksmta .ab-label{color:var(--fm-navy)}
+.about-block.fm .ab-label{color:var(--fm-blue)}
+.about-block.alliance .ab-label{color:var(--fm-orange)}
+.about-block h4{font-family:var(--serif);font-size:.95rem;font-weight:700;color:var(--fm-navy);margin:0 0 .25rem;text-transform:none;letter-spacing:0;line-height:1.3}
+.about-block p{font-size:.8rem;line-height:1.5;color:var(--fm-gray);margin:0}
+.about-right{padding:1.8vh 1.8vw;background:var(--fm-navy);color:var(--fm-white);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.about-stat{margin-bottom:0}
+.about-stat .v{font-family:var(--serif);font-size:2.4rem;font-weight:900;color:var(--fm-orange);line-height:1}
+.about-stat .s{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700;margin-top:.2rem}
+.about-testimonial{padding:.8rem 1rem;background:rgba(255,255,255,.06);border-left:4px solid var(--fm-orange)}
+.about-testimonial .qt{font-family:var(--serif);font-size:.85rem;font-weight:600;color:var(--fm-white);line-height:1.4;font-style:italic}
+.about-testimonial .attr{margin-top:.4rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--fm-light-blue);font-weight:700}
+
+/* Print fallback */
+@media print{html,body{height:auto;overflow:visible}.slide{position:relative;display:block!important;page-break-after:always;height:100vh}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- ============== SLIDE 1: TITLE ============== -->
+<section class="slide gradient title title-slide active">
+  <svg class="constellation" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="200" y1="120" x2="380" y2="280"/><line x1="380" y1="280" x2="560" y2="180"/>
+    <line x1="560" y1="180" x2="780" y2="320"/><line x1="780" y1="320" x2="980" y2="240"/>
+    <line x1="380" y1="280" x2="500" y2="480"/><line x1="500" y1="480" x2="700" y2="540"/>
+    <line x1="700" y1="540" x2="900" y2="460"/><line x1="900" y1="460" x2="780" y2="320"/>
+    <line x1="200" y1="120" x2="500" y2="480"/><line x1="980" y1="240" x2="900" y2="460"/>
+    <line x1="200" y1="120" x2="100" y2="360"/><line x1="100" y1="360" x2="500" y2="480"/>
+    <circle cx="200" cy="120" r="5"/><circle cx="380" cy="280" r="4"/>
+    <circle cx="560" cy="180" r="5" class="acc"/><circle cx="780" cy="320" r="4"/>
+    <circle cx="980" cy="240" r="5"/><circle cx="500" cy="480" r="4" class="acc"/>
+    <circle cx="700" cy="540" r="5"/><circle cx="900" cy="460" r="4"/>
+    <circle cx="100" cy="360" r="3"/>
+  </svg>
+  <div class="brand-top on-dark"><span class="dot"></span> KSM Transport Advisors · OTA Leadership Conference 2026</div>
+  <h1 class="reveal">From Survival to <strong>Advantage</strong></h1>
+  <div class="sub reveal-2">What the Most Resilient Carriers Learned During the Great Freight Depression.</div>
+  <div class="author reveal-3">
+    <div class="who">
+      <div class="n">Chris Henry</div>
+      <div class="r">President · KSM Transport Advisors</div>
+    </div>
+  </div>
+  <div class="stamp reveal-4" style="right:auto;left:7vw"><strong>Ohio Trucking Association</strong><br>April 21, 2026</div>
+  <div class="slide-num">01 / 23</div>
+</section>
+
+<!-- ============== SLIDE 2: ABOUT US ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Who we are</div>
+  <span class="eyebrow reveal">KSM Transport Advisors · FreightMath</span>
+  <h2 class="reveal" style="margin-top:.3rem">Built for carriers. Measured in OR.</h2>
+  <div class="reveal-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2vw;flex:1;margin-top:1.2vh;min-height:0">
+
+    <!-- Panel 1: KSMTA -->
+    <div style="background:#0A2463;color:#fff;padding:2vh 2vw;display:flex;flex-direction:column;gap:1rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#96BCE4;font-weight:700">KSM Transport Advisors</div>
+      <div style="font-family:var(--serif);font-size:1.6rem;font-weight:900;color:#fff;line-height:1.1">The trucking industry's advisory firm.</div>
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.7rem">
+        <li style="font-size:1.05rem;color:#DCDAD8;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Founded 2006 · Part of Katz, Sapper &amp; Miller</li>
+        <li style="font-size:1.05rem;color:#DCDAD8;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Top 50 independent U.S. accounting &amp; advisory firm</li>
+        <li style="font-size:1.05rem;color:#DCDAD8;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>U.S. &amp; Canada operations (KSMTA Canada est. 2021)</li>
+        <li style="font-size:1.05rem;color:#DCDAD8;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>100% exclusive to for-hire truckload carriers</li>
+      </ul>
+      <div style="margin-top:auto;padding-top:1rem;border-top:1px solid rgba(150,188,228,.3)">
+        <div style="font-family:var(--serif);font-size:3rem;font-weight:900;color:#E26E17;line-height:1">93+</div>
+        <div style="font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:#96BCE4;font-weight:700;margin-top:.3rem">Carriers · North America</div>
+      </div>
+    </div>
+
+    <!-- Panel 2: FreightMath -->
+    <div style="background:#2C78C9;color:#fff;padding:2vh 2vw;display:flex;flex-direction:column;gap:1rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#fff;opacity:.75;font-weight:700">FreightMath Platform</div>
+      <div style="font-family:var(--serif);font-size:1.6rem;font-weight:900;color:#fff;line-height:1.1">Network Profitability. Activity-Based Costing.</div>
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.7rem">
+        <li style="font-size:1.05rem;color:#fff;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Load-level OR: one-way, inbound &amp; outbound</li>
+        <li style="font-size:1.05rem;color:#fff;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Identifies which lanes, customers &amp; tractors create value</li>
+        <li style="font-size:1.05rem;color:#fff;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>FreightMath OR (FMOR) — the single unified metric</li>
+        <li style="font-size:1.05rem;color:#fff;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>MapLedger · FreightMarks · BidRight</li>
+      </ul>
+      <div style="margin-top:auto;padding:1rem 1.2rem;background:rgba(0,0,0,.2);border-left:4px solid #E26E17">
+        <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:#fff;font-style:italic;line-height:1.45">"FreightMath allows us to clearly see what works and what doesn't."</div>
+        <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:.4rem">John Pemberton · Pemberton Truck Lines</div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Alliance -->
+    <div style="background:#fff;border-top:6px solid #E26E17;padding:2vh 2vw;display:flex;flex-direction:column;gap:1rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#E26E17;font-weight:700">The FreightMath Alliance</div>
+      <div style="font-family:var(--serif);font-size:1.6rem;font-weight:900;color:#0A2463;line-height:1.1">Carriers running on data, not instinct.</div>
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.7rem">
+        <li style="font-size:1.05rem;color:#6E6E6E;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Meets twice per year</li>
+        <li style="font-size:1.05rem;color:#6E6E6E;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Share best practices across member carriers</li>
+        <li style="font-size:1.05rem;color:#6E6E6E;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Collaborate to improve FreightMath &amp; FreightMarks</li>
+        <li style="font-size:1.05rem;color:#6E6E6E;display:flex;gap:.7rem;align-items:flex-start"><span style="color:#E26E17;font-weight:900;flex-shrink:0">→</span>Peer benchmarking via FreightMarks</li>
+      </ul>
+      <div style="margin-top:auto;padding:1rem 1.2rem;background:#F5F5F5;border-left:4px solid #0A2463">
+        <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:#0A2463;font-style:italic;line-height:1.45">"Before FreightMath, explaining our costs was an uphill battle. Now the data speaks for itself."</div>
+        <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#6E6E6E;margin-top:.4rem">Michael McGovern · COO, Leonard's Express</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="slide-num">02 / 23</div>
+</section>
+
+<!-- ============== SLIDE 3: 13 QUARTERS ============== -->
+<section class="slide gradient">
+  <div class="brand-top on-dark"><span class="dot"></span> The Setup</div>
+  <div class="hero-stat">
+    <div class="meta reveal">The Great Freight Depression — Q2 2022 to Q2 2025</div>
+    <div class="num reveal-2"><span data-counter="13" data-duration="1300">0</span></div>
+    <div class="desc reveal-3"><strong style="color:#fff">Quarters of sustained margin compression.</strong> The longest sustained downturn in the modern history of North American truckload.</div>
+    <div class="reveal-4" style="margin-top:2rem;padding:1.2rem 1.8rem;background:rgba(255,255,255,.07);border-left:4px solid var(--fm-orange);max-width:55ch">
+      <div style="font-family:var(--serif);font-size:1.2rem;font-weight:300;color:var(--fm-white);line-height:1.4;font-style:italic">"How did you go bankrupt? <em style="color:var(--fm-light-blue);font-style:italic">Two ways. Gradually, then suddenly.</em>"</div>
+      <div style="margin-top:.6rem;font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700">Ernest Hemingway · The Sun Also Rises</div>
+    </div>
+  </div>
+  <div class="slide-num">03 / 23</div>
+  <div class="slide-meta">Sources: FreightWaves, FMCSA, KSM Transport Advisors</div>
+</section>
+
+<!-- ============== SLIDE 3: OLD PLAYBOOK ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> Frame the moment</div>
+  <span class="eyebrow reveal">A different kind of recovery</span>
+  <h2 class="reveal">The old playbook is dead.</h2>
+  <p class="lede reveal-2" style="margin-top:1rem">Every recovery you remember was demand-led. This one isn't. The floor is rising because operators pricing below cost are being <strong style="color:var(--fm-orange)">removed</strong>, not because people ordered more stuff on Amazon.</p>
+  <div class="compare reveal-3">
+    <div class="col bad">
+      <h4>Previous Recoveries</h4>
+      <ul>
+        <li>Demand-led</li>
+        <li>Capacity returned quickly</li>
+        <li>Rate spikes were temporary</li>
+        <li>Non-compliant operators survived</li>
+        <li>Recovery rewarded everyone</li>
+      </ul>
+    </div>
+    <div class="col good">
+      <h4>This Recovery</h4>
+      <ul>
+        <li>Supply-led</li>
+        <li>Capacity removed structurally</li>
+        <li>Rate floors being enforced</li>
+        <li>Non-compliant operators eliminated</li>
+        <li>Recovery rewards the compliant</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-num">04 / 23</div>
+  <div class="fm-footer">FREIGHT<span class="b">MATH</span> — not Emotion</div>
+</section>
+
+<!-- ============== SLIDE 4: HHI ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Why structural matters</div>
+  <span class="eyebrow reveal">Market concentration · Herfindahl-Hirschman Index</span>
+  <h2 class="reveal">The freest of free markets.</h2>
+  <p class="lede reveal-2" style="margin-top:.8rem">In a hyper-competitive market where no operator can set a price floor, the regulatory floor <em>is</em> the floor.</p>
+  <div class="hhi-wrap reveal-3" style="margin-top:3vh">
+    <div class="hhi-bars">
+      <div class="hhi-bar"><div class="name">Parcel (UPS/FedEx)</div><div class="track"><div class="fill" data-w="100"></div></div><div class="val">3,600</div></div>
+      <div class="hhi-bar"><div class="name">DOJ "Concentrated"</div><div class="track"><div class="fill" data-w="69"></div></div><div class="val">2,500</div></div>
+      <div class="hhi-bar"><div class="name">Class I Rail</div><div class="track"><div class="fill" data-w="56"></div></div><div class="val">2,000</div></div>
+      <div class="hhi-bar"><div class="name">U.S. Airlines</div><div class="track"><div class="fill" data-w="50"></div></div><div class="val">1,800</div></div>
+      <div class="hhi-bar"><div class="name">DOJ "Unconcentrated"</div><div class="track"><div class="fill" data-w="42"></div></div><div class="val">1,500</div></div>
+      <div class="hhi-bar tl"><div class="name" style="color:var(--fm-orange)">Truckload Trucking</div><div class="track"><div class="fill" data-w="2"></div></div><div class="val" style="color:var(--fm-orange)">50–100</div></div>
+      <div class="threshold-line">⤷ Truckload sits 15× below the threshold of "unconcentrated"</div>
+    </div>
+    <div class="hhi-side">
+      <div class="num"><span data-counter="580" data-suffix="K+" data-duration="1500">0</span></div>
+      <div class="lbl">Active U.S. carriers</div>
+      <p>97% operate 20 trucks or fewer. No single operator can set price discipline. Strip away enforcement and you don't have a free market — you have an unregulated one.</p>
+    </div>
+  </div>
+  <div class="slide-num">05 / 23</div>
+  <div class="slide-meta"><a href="https://www.ksmcpa.com/insights/the-freight-market-is-finally-cleaning-house-and-enforcement-is-holding-the-broom/" target="_blank" style="color:var(--fm-blue);text-decoration:none;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--fm-orange);padding-bottom:1px">→ The Freight Market Is Finally Cleaning House — ksmcpa.com</a></div>
+</section>
+
+<!-- ============== SLIDE 5: $0.73 LIE ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> The math you knew in your gut</div>
+  <span class="eyebrow reveal">The hidden subsidy</span>
+  <h2 class="reveal">The $0.73/mile lie.</h2>
+  <p class="lede reveal-2" style="margin-top:.8rem">For 13 quarters you weren't competing on efficiency. You were competing against <strong style="color:var(--fm-orange)">fraud.</strong></p>
+  <div class="cost-compare reveal-3">
+    <div class="cell left">
+      <div>
+        <div class="label">Compliant Carrier · All-In Cost</div>
+        <div class="price">$2.38<span style="font-size:.35em;color:var(--fm-gray)">/mi</span></div>
+      </div>
+      <div style="margin-top:1.5rem;font-family:var(--mono);font-size:.85rem;color:var(--fm-gray);line-height:1.7">
+        Full insurance · Proper payroll & taxes<br>
+        ELD compliant · Drug & alcohol testing<br>
+        Qualified CDL drivers · Equipment maint.
+      </div>
+    </div>
+    <div class="cell right">
+      <div>
+        <div class="label">Non-Compliant Operator</div>
+        <div class="price">$1.65<span style="font-size:.35em;color:var(--fm-gray)">/mi</span></div>
+      </div>
+      <div style="margin-top:1.5rem;font-family:var(--mono);font-size:.85rem;color:var(--fm-gray);line-height:1.7">
+        Minimal/no insurance · Driver Inc.<br>
+        Falsified ELD logs · No testing<br>
+        Non-domiciled CDL · Deferred maint.
+      </div>
+    </div>
+  </div>
+  <div class="gap-callout reveal-4">$0.73/mi gap = <strong>$1.3M/yr</strong> cost advantage on a 10-truck fleet (non-compliant)</div>
+  <div class="reveal-4" style="text-align:center;margin-top:1.2vh">
+    <a href="https://info.ksmcpa.com/hubfs/FreightMath/Free%20Resources/Carrier%20Cost%20Compliance.html" target="_blank" style="font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--fm-blue);text-decoration:none;border-bottom:2px solid var(--fm-orange);padding-bottom:2px">→ The Non-Compliance Cost Advantage Calculator</a>
+  </div>
+  <div class="slide-num">06 / 23</div>
+</section>
+
+<!-- ============== SLIDE 6: COMPLIANCE GAP CALCULATOR ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Live Calculator</div>
+  <span class="eyebrow reveal">Quantify the cost of competing against fraud</span>
+  <h2 class="reveal">What did the gap cost <em style="color:var(--fm-orange);font-style:italic">your</em> fleet?</h2>
+  <div class="calc-wrap reveal-3">
+    <div class="calc-inputs">
+      <h4>Inputs · adjust to your operation</h4>
+      <div class="input-row">
+        <label>Fleet Size <span class="v" id="cg-trucks-v">10 trucks</span></label>
+        <input type="range" id="cg-trucks" min="1" max="500" value="10">
+        <div class="ticks"><span>1</span><span>250</span><span>500</span></div>
+      </div>
+      <div class="input-row">
+        <label>Avg Miles per Truck per Week <span class="v" id="cg-miles-v">3,500</span></label>
+        <input type="range" id="cg-miles" min="1500" max="6000" value="3500" step="100">
+        <div class="ticks"><span>1,500</span><span>3,750</span><span>6,000</span></div>
+      </div>
+      <div class="input-row">
+        <label>Compliance Cost Gap ($/mile) <span class="v" id="cg-gap-v">$0.73</span></label>
+        <input type="range" id="cg-gap" min="0.10" max="1.20" value="0.73" step="0.01">
+        <div class="ticks"><span>$0.10</span><span>$0.65</span><span>$1.20</span></div>
+      </div>
+      <div class="input-row">
+        <label>Years You Competed Against It <span class="v" id="cg-years-v">3.25 yrs</span></label>
+        <input type="range" id="cg-years" min="1" max="5" value="3.25" step="0.25">
+        <div class="ticks"><span>1</span><span>3</span><span>5</span></div>
+      </div>
+    </div>
+    <div class="calc-output">
+      <div class="out-lbl">Your competitive disadvantage</div>
+      <div class="out-val" id="cg-output">$5.99M</div>
+      <div class="out-sub">That's the cumulative dollar amount of margin you ceded to operators who externalized the costs you absorbed. Now multiply by the carriers who didn't survive.</div>
+      <div class="breakdown">
+        <div class="row"><span>Annual run-rate gap</span><span class="v" id="cg-annual">$1.33M</span></div>
+        <div class="row"><span>Total miles · period</span><span class="v" id="cg-miles-total">8.21M</span></div>
+        <div class="row"><span>Per truck · per year</span><span class="v" id="cg-per-truck">$132,860</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">07 / 23</div>
+  <div class="slide-meta">Calculator methodology: Fleet × Avg Weekly Miles × 52 × Gap/mi × Years</div>
+</section>
+
+<!-- ============== SLIDE 7: THE BROOM ============== -->
+<section class="slide gradient">
+  <div class="brand-top on-dark"><span class="dot"></span> Enforcement is holding the broom</div>
+  <span class="eyebrow reveal">Six enforcement actions · one direction · no reversal</span>
+  <h2 class="reveal">The broom.</h2>
+  <p class="lede reveal-2" style="margin-top:.5rem;max-width:75ch">Not one regulation. Six. Simultaneously. On both sides of the border. None of it is going to be reversed.</p>
+  <div class="enforce-grid reveal-3">
+    <div class="enforce-card"><span class="num">01</span><h5>MOTUS</h5><div class="stat">PPOB Verification · 400–500 ghost offices</div><div class="desc">Chameleon carriers can no longer recycle DOT numbers. 48-hour records inspection rule.</div></div>
+    <div class="enforce-card"><span class="num">02</span><h5>ELP Enforcement</h5><div class="stat">19,000+ violations · 10,000 sidelined</div><div class="desc">English Language Proficiency revocations — not just OOS. CDLs being pulled by states.</div></div>
+    <div class="enforce-card"><span class="num">03</span><h5>Non-Domiciled CDL</h5><div class="stat">60,000 improperly issued · CA alone</div><div class="desc">CDL credentialing system rebuilt from scratch. Massive license invalidation underway.</div></div>
+    <div class="enforce-card"><span class="num">04</span><h5>ELD Tampering = OOS</h5><div class="stat">Effective April 1, 2026 · 42 ELDs purged</div><div class="desc">Falsify a log, park the truck. 238 new ELDs blocked from self-certifying.</div></div>
+    <div class="enforce-card"><span class="num">05</span><h5>CDL Mill Purge</h5><div class="stat">7,000+ fraudulent training providers</div><div class="desc">Entry-level driver training fraud being unwound. Graduates being re-tested or removed.</div></div>
+    <div class="enforce-card"><span class="num">06</span><h5>Driver Inc. / CRA</h5><div class="stat">Canada Budget 2025 · permanent funding</div><div class="desc">Cross-border misclassification crackdown is now a permanent enforcement apparatus.</div></div>
+  </div>
+  <div class="slide-num">08 / 23</div>
+  <div class="slide-meta">Sources: FMCSA, Overdrive, FreightWaves, CRA</div>
+</section>
+
+<!-- ============== SLIDE 8: MATH OF REMOVAL ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> The capacity that's leaving</div>
+  <span class="eyebrow reveal">The math of removal</span>
+  <h2 class="reveal">5%–12% of the active driver pool. Removed. Permanently.</h2>
+  <div class="removal-grid reveal-3" style="margin-top:3vh">
+    <div class="removal-stack">
+      <div class="r-item"><div class="lbl">ELP Non-Compliance</div><div class="val">3–5%</div></div>
+      <div class="r-item"><div class="lbl">Non-Domiciled CDL Revocations</div><div class="val">1–3%</div></div>
+      <div class="r-item"><div class="lbl">ELD Tampering OOS</div><div class="val">1–2%</div></div>
+      <div class="r-item"><div class="lbl">Chameleon Carrier Shutdowns</div><div class="val">&lt;1%</div></div>
+      <div class="r-item"><div class="lbl">CDL Mill Graduate Removals</div><div class="val">&lt;1%</div></div>
+      <div class="r-item" style="border-left-color:var(--fm-orange)"><div class="lbl"><strong>Carrier failures · current pace</strong></div><div class="val">~1,000–1,500/wk</div></div>
+    </div>
+    <div>
+      <div class="r-total">
+        <div class="pct"><span data-counter="12" data-suffix="%" data-duration="1500">0</span></div>
+        <div class="lbl">Of the U.S. driver pool</div>
+        <div class="drivers">214,000 to <strong style="color:#fff">437,000</strong> drivers removed over 24–36 months</div>
+      </div>
+      <p style="margin-top:1.5rem;font-size:.95rem;color:var(--fm-gray);line-height:1.6">This is not a workforce reduction — it is the belated application of standards that should have been enforced all along. <em style="color:var(--fm-navy)">They are not coming back.</em></p>
+    </div>
+  </div>
+  <div class="slide-num">09 / 23</div>
+</section>
+
+<!-- ============== SLIDE 9: LESSON 1 - PROFIT BEFORE GROWTH ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 1 of 8</div>
+  <div class="lesson">
+    <div class="num-box reveal">01</div>
+    <div class="body">
+      <h2 class="reveal-2">Profit before growth.</h2>
+      <div class="subhead reveal-2">The carriers still standing chose margin over the truck count.</div>
+      <p class="reveal-3"><strong>Margin is too low in good times, considering the extreme risks that carriers face on a daily basis. You must have a profit-first mentality.</strong></p>
+      <p class="reveal-3">Carriers that survived the downturn had to make many tough decisions — park tractors, cut customers, lay-off support staff.</p>
+      <p class="reveal-3">Growth is a multiplier. If your underlying gross margins are <strong style="color:var(--fm-orange)">negative</strong>, growth multiplies the loss. Survivors learned that fleet contraction is not a failure mode, it is a discipline.</p>
+      <div class="pull reveal-4">"You cannot out-volume a bad cost structure. The only way to grow profitably is to be profitable first."</div>
+    </div>
+  </div>
+  <div class="slide-num">10 / 23</div>
+</section>
+
+<!-- ============== SLIDE 10: LESSON 2 - C&D PLAYERS ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 2 of 8</div>
+  <div class="lesson">
+    <div class="num-box reveal">02</div>
+    <div class="body">
+      <h2 class="reveal-2">Cut the D and C players.</h2>
+      <div class="subhead reveal-2">Unprofitable customers, lanes, poor performing support staff, out of network drivers — and the salesperson who wouldn't let you fire any of them.</div>
+      <p class="reveal-3">Every freight network sorts into A, B, C, and D performers. Through the boom you carried the C's and D's because revenue covered the sins. The depression made that subsidy unaffordable. The survivors ran the same triage on three lists at once:</p>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.2vw;margin-top:1.5rem">
+        <div style="padding:1.5rem;background:var(--fm-light-gray);border-left:4px solid var(--fm-orange)">
+          <div style="font-family:var(--mono);font-size:.82rem;color:var(--fm-orange);letter-spacing:.15em;font-weight:700;margin-bottom:.6rem">CUSTOMER LIST</div>
+          <div style="font-family:var(--serif);font-weight:700;color:var(--fm-navy);font-size:1.35rem">Identify the toxic customers</div>
+          <p style="font-size:1rem;margin-top:.6rem;color:var(--fm-gray)">Based on gross and net margin (OR) — not revenue. Your biggest customer is rarely your most profitable.</p>
+        </div>
+        <div style="padding:1.5rem;background:var(--fm-light-gray);border-left:4px solid var(--fm-orange)">
+          <div style="font-family:var(--mono);font-size:.82rem;color:var(--fm-orange);letter-spacing:.15em;font-weight:700;margin-bottom:.6rem">LANE LIST</div>
+          <div style="font-family:var(--serif);font-weight:700;color:var(--fm-navy);font-size:1.35rem">Network discipline is key</div>
+          <p style="font-size:1rem;margin-top:.6rem;color:var(--fm-gray)">Density drives Efficiency. Efficiency drives Velocity. Velocity drives Profitability.</p>
+        </div>
+      </div>
+      <div class="pull reveal-4" style="margin-top:1.5rem">Subtraction is a strategy. Carriers who refused to cut subsidized their A's into ruin.</div>
+    </div>
+  </div>
+  <div class="slide-num">11 / 23</div>
+</section>
+
+<!-- ============== SLIDE 11: LESSON 3 - BALANCE SHEET (NEW) ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 3 of 8</div>
+  <span class="eyebrow reveal">Every carrier's balance sheet is bruised. What matters is what you did with it.</span>
+  <h2 class="reveal">Clean up and protect the balance sheet.</h2>
+  <p class="lede reveal-2" style="margin-top:.8rem;max-width:80ch">The downturn forced discipline most carriers had never needed. Many flexed in ways they hadn't before — and came out structurally stronger for it.</p>
+  <div class="reveal-3" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vw;flex:1;margin-top:1.5vh;min-height:0">
+
+    <div style="background:var(--fm-navy);color:var(--fm-white);padding:2vh 1.8vw;display:flex;flex-direction:column;gap:.8rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700">Equipment</div>
+      <div style="font-family:var(--serif);font-size:1.9rem;font-weight:900;color:var(--fm-orange);line-height:1">Age by necessity. Gain by capability.</div>
+      <p style="font-size:.95rem;color:var(--fm-warm-gray);line-height:1.5;margin-top:auto">Forced to hold equipment longer, carriers developed maintenance capabilities and cost discipline they never had before.</p>
+    </div>
+
+    <div style="background:var(--fm-navy);color:var(--fm-white);padding:2vh 1.8vw;display:flex;flex-direction:column;gap:.8rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700">Debt</div>
+      <div style="font-family:var(--serif);font-size:1.9rem;font-weight:900;color:var(--fm-orange);line-height:1">Creative refinancing.</div>
+      <p style="font-size:.95rem;color:var(--fm-warm-gray);line-height:1.5;margin-top:auto">Locking fixed rates, restructuring equipment loans, extending terms — survivors found flexibility before they needed it.</p>
+    </div>
+
+    <div style="background:var(--fm-navy);color:var(--fm-white);padding:2vh 1.8vw;display:flex;flex-direction:column;gap:.8rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700">Assets</div>
+      <div style="font-family:var(--serif);font-size:1.9rem;font-weight:900;color:var(--fm-orange);line-height:1">Park what doesn't contribute to overhead.</div>
+      <p style="font-size:.95rem;color:var(--fm-warm-gray);line-height:1.5;margin-top:auto">Idle tractors, underused trailers, surplus equipment. If it isn't generating revenue to cover its costs, it's a drag on every load that is.</p>
+    </div>
+
+    <div style="background:var(--fm-orange);color:var(--fm-white);padding:2vh 1.8vw;display:flex;flex-direction:column;gap:.8rem">
+      <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-white);opacity:.8;font-weight:700">The lesson</div>
+      <div style="font-family:var(--serif);font-size:1.9rem;font-weight:900;color:var(--fm-white);line-height:1">Bruised — not broken.</div>
+      <p style="font-size:.95rem;color:var(--fm-white);line-height:1.5;margin-top:auto">The carriers who protected their balance sheet through the depression entered the recovery with acquisition capacity. The others are the acquisition.</p>
+    </div>
+
+  </div>
+  <div class="slide-num">12 / 23</div>
+</section>
+
+<!-- ============== SLIDE 12: LESSON 4 - CASH IS OXYGEN (NEW) ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 4 of 8</div>
+  <span class="eyebrow reveal">The downturn was made worse by those who held the pen.</span>
+  <h2 class="reveal">Shippers made it harder. You still had to manage through it.</h2>
+  <div class="cash-wrap reveal-3" style="margin-top:1vh">
+    <div class="cash-col dso">
+      <div class="stamp">Payment Terms</div>
+      <h3>Shippers extended terms. Carriers absorbed the float.</h3>
+      <ul style="margin-top:.8rem">
+        <li>Net-60 and Net-90 became normalized during the downturn</li>
+        <li>Carriers who accepted without negotiating gave away margin twice</li>
+        <li>DSO by customer is part of the true cost of the freight</li>
+        <li>Every day of extended terms is a day your cash funds their business</li>
+      </ul>
+      <div class="mini-stat" style="margin-top:auto;padding-top:1rem">
+        <div class="v" style="color:var(--fm-blue);font-size:1.6rem">DSO = Hidden Cost</div>
+        <div class="s">know it by customer, by lane</div>
+      </div>
+    </div>
+    <div class="cash-col cp">
+      <div class="stamp">Fuel Surcharge Programs</div>
+      <h3>Shipper-designed FSC programs shifted fuel risk onto carriers.</h3>
+      <ul style="margin-top:.8rem">
+        <li>Programs like Breakthrough restructured FSC in shippers' favour</li>
+        <li>OPIS vs DOE/EIA basis risk is real and quantifiable</li>
+        <li>A bad FSC program can turn a profitable lane into a loss</li>
+        <li>Negotiate FSC terms as hard as you negotiate rate</li>
+      </ul>
+      <div class="mini-stat" style="margin-top:auto;padding-top:1rem">
+        <div class="v" style="font-size:1.6rem">FSC is pricing</div>
+        <div class="s">treat it like one — every time</div>
+      </div>
+    </div>
+  </div>
+  <div class="cash-callout reveal-4">The shipper had the leverage. <strong>The survivors knew their numbers well enough to push back.</strong></div>
+  <div class="slide-num">13 / 23</div>
+</section>
+
+<!-- ============== SLIDE 13: LESSON 5 - LENDING PARTNERS (renumbered from 11) ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 5 of 8</div>
+  <div class="lesson">
+    <div class="num-box reveal">05</div>
+    <div class="body">
+      <h2 class="reveal-2">Your lender is a partner, not a vendor.</h2>
+      <div class="subhead reveal-2">In a 13-quarter downturn, the relationship is the covenant.</div>
+      <p class="reveal-3">The carriers who made it through almost universally had two things in common with their banks: <strong>radical transparency and early conversations.</strong> The casualties showed up to the lender in Q3 with bad news the lender first heard about that morning. The survivors brought the bad news in Q1 with a plan attached.</p>
+      <p class="reveal-3">Equipment finance and re-finance, A/R lines — every credit instrument was renegotiated under stress. Lenders who knew the operator <em>and</em> the model were willing to flex covenants. Lenders who had been kept at arm's length pulled the line. The difference was almost never the financials. It was the relationship that preceded them.</p>
+      <div class="pull reveal-4">A truckload OTR carrier is a 95-OR business in good times. Pick lending partners who understand that — and treat them like partners.</div>
+    </div>
+  </div>
+  <div class="slide-num">14 / 23</div>
+</section>
+
+<!-- ============== SLIDE 14: LESSON 6 - TRUCKING FOR FUN (renumbered from 12) ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 6 of 8</div>
+  <div class="lesson">
+    <div class="num-box reveal">06</div>
+    <div class="body">
+      <h2 class="reveal-2">Trucking for fun is no fun.</h2>
+      <div class="subhead reveal-2">"Fun freight" is any load you take for reasons other than its contribution to the network.</div>
+      <p class="reveal-3">Every fleet has it: the load you take because the customer's been with you 20 years. The lane you keep because the dispatcher likes the driver who runs it. The freight you accept because saying no feels worse than the loss. Cultural habit. Convenience. <strong>Not strategy.</strong></p>
+      <p class="reveal-3">FreightMath data is unambiguous on this: freight moved <strong style="color:var(--fm-orange)">inside</strong> a strategic footprint runs 20–25% more profitable than freight moved outside it. Profitability is cumulative — and so is the bleed from "small, justifiable" losses.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2vw;margin-top:2rem">
+        <div style="padding:1.5rem 2rem;background:#eaf3fc;border-left:5px solid var(--fm-blue)">
+          <div style="font-family:var(--mono);font-size:.82rem;color:var(--fm-blue);letter-spacing:.15em;font-weight:700;margin-bottom:.5rem">IN-FOOTPRINT FREIGHT</div>
+          <div style="font-family:var(--serif);font-size:2.2rem;font-weight:900;color:var(--fm-navy)">+20–25%</div>
+          <div style="color:var(--fm-gray);font-size:1.05rem;margin-top:.5rem">Margin advantage over out-of-footprint</div>
+        </div>
+        <div style="padding:1.5rem 2rem;background:#fff3e9;border-left:5px solid var(--fm-orange)">
+          <div style="font-family:var(--mono);font-size:.82rem;color:var(--fm-orange);letter-spacing:.15em;font-weight:700;margin-bottom:.5rem">FUN FREIGHT</div>
+          <div style="font-family:var(--serif);font-size:2.2rem;font-weight:900;color:var(--fm-navy)">No fun.</div>
+          <div style="color:var(--fm-gray);font-size:1.05rem;margin-top:.5rem">A deliberate decision to underperform.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">15 / 23</div>
+  <div class="slide-meta">Source: KSM Insights — "Trucking for Fun Is No Fun: The Hidden Cost of Cultural Habits"</div>
+</section>
+
+<!-- ============== SLIDE 13: LESSON 5 - RATE-HAUL RATIO ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 7 of 8</div>
+  <span class="eyebrow reveal">Is your network under- or over-priced?</span>
+  <h2 class="reveal">Length of haul stopped predicting profit. The Rate-Haul Ratio took its place.</h2>
+  <div class="rhr-wrap reveal-3">
+    <div class="rhr-chart"><canvas id="rhrChart"></canvas></div>
+    <div class="rhr-side">
+      <h3>Two metrics. One conclusion.</h3>
+      <div class="stat-card">
+        <div class="lbl">Rate-Haul Ratio (RHR)</div>
+        <div class="v">$/mi ÷ haul band</div>
+        <div class="s">Strips length-of-haul distortion from rate. Lets you compare a 200-mi load to a 1,200-mi load on the same axis.</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Expected RPM Curve</div>
+        <div class="v">Market-fit benchmark</div>
+        <div class="s">Where the broader freight market <em>actually</em> pays at each haul band — not where you wish it did.</div>
+      </div>
+      <p style="margin-top:1.5rem;font-size:1rem;font-weight:700;color:var(--fm-navy);line-height:1.5">"Carriers can succeed at any length of haul. They cannot outrun mispriced freight."</p>
+    </div>
+  </div>
+  <div class="slide-num">16 / 23</div>
+  <div class="slide-meta">Source: KSM Insights — "Is Your Freight Network Under or Over Priced?"</div>
+</section>
+
+<!-- ============== SLIDE 17: LESSON 8 - A-PLAYERS ARE AN ASSET CLASS (NEW) ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> Survivor playbook · Lesson 8 of 8</div>
+  <span class="eyebrow reveal">The asset the balance sheet doesn't capture</span>
+  <h2 class="reveal">A-players are an asset class. Treat them like one.</h2>
+  <p class="lede reveal-2" style="margin-top:.8rem;max-width:75ch">Survivors cut headcount — but not headcount uniformly. They protected the top quartile of drivers, dispatchers, and managers with the same discipline they applied to equipment equity.</p>
+  <div class="ap-wrap reveal-3">
+    <div class="ap-stack">
+      <div class="ap-card a">
+        <div class="tier">A</div>
+        <div>
+          <div class="lbl">Top Quartile · Protect at all costs</div>
+          <h5>Pay-for-performance. Transparent. Predictable.</h5>
+          <p>Mile-based bonuses, safety tiers, tenure accelerators. Survivors grew A-driver pay through the downturn while freezing everyone else. The raise cost less than the turnover it prevented.</p>
+        </div>
+      </div>
+      <div class="ap-card b">
+        <div class="tier">B</div>
+        <div>
+          <div class="lbl">Solid Middle · Coach up or hold</div>
+          <h5>Clear performance ladder. Measured monthly.</h5>
+          <p>Visible path to A-tier with specific metrics — miles, on-time %, safety score, fuel efficiency. No ambiguity about what closes the gap. Held accountable, but developed.</p>
+        </div>
+      </div>
+      <div class="ap-card cd">
+        <div class="tier">C·D</div>
+        <div>
+          <div class="lbl">Bottom Tiers · Coach out</div>
+          <h5>Low utilization costs the same in overhead as high.</h5>
+          <p>A bottom-quartile driver consumes the same recruiter, trainer, dispatcher, and safety cost as a top-quartile driver — while generating 30–40% less revenue. Subtraction is a strategy.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ap-side">
+      <h3>The math of driver sorting</h3>
+      <div class="ap-stat">
+        <div class="v">2–3×</div>
+        <div class="s">Productivity gap · top vs bottom quartile</div>
+        <div class="d">Top-quartile drivers run 20–40% more utilized miles, have 50–70% lower turnover costs, and generate 2–3× the contribution margin per truck.</div>
+      </div>
+      <div class="ap-stat">
+        <div class="v">$12K+</div>
+        <div class="s">Cost per turnover · avg TL carrier</div>
+        <div class="d">Recruiting, orientation, training, and productivity ramp. Survivors attacked turnover by paying A-drivers more — not by reducing the per-hire cost.</div>
+      </div>
+      <div class="pull">The dispatch board that kept the A's running is the one that came out of the depression with a company still attached to it.</div>
+    </div>
+  </div>
+  <div class="slide-num">17 / 23</div>
+  <div class="fm-footer">FREIGHT<span class="b">MATH</span> — not Emotion</div>
+</section>
+
+<!-- ============== SLIDE 16: AUTONOMY TIMELINE ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> The runway under the for-hire model</div>
+  <span class="eyebrow reveal">Autonomy is in the gradually phase. Plan for the suddenly.</span>
+  <h2 class="reveal">9 to 10 years. Then the model breaks.</h2>
+  <div class="timeline reveal-3">
+    <div class="tl-fill"></div>
+    <div class="tl-stops">
+      <div class="tl-stop">
+        <div class="dot"></div>
+        <div class="yr">2026 — 2028</div>
+        <h4>Corridor Phase</h4>
+        <p>Hub-to-hub autonomous corridors (TX, AZ, NM). First-mover shippers shift lanes.</p>
+      </div>
+      <div class="tl-stop">
+        <div class="dot"></div>
+        <div class="yr">2029 — 2031</div>
+        <h4>Scale Phase</h4>
+        <p>Autonomous middle mile cost-competitive on 40%+ of linehaul. Regulatory frameworks mature.</p>
+      </div>
+      <div class="tl-stop">
+        <div class="dot"></div>
+        <div class="yr">2032 — 2035</div>
+        <h4>Disruption Phase</h4>
+        <p>Traditional for-hire model is economically nonviable for the majority of linehaul freight.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">18 / 23</div>
+</section>
+
+<!-- ============== SLIDE 17: THE PARADOX ============== -->
+<section class="slide gradient">
+  <div class="brand-top on-dark"><span class="dot"></span> The paradox</div>
+  <span class="eyebrow reveal">The best years of for-hire trucking are happening at the end of for-hire trucking.</span>
+  <h2 class="reveal" style="max-width:90%">Both things are true. Act accordingly.</h2>
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:2vw;align-items:stretch;flex:1;margin-top:3vh" class="reveal-3">
+    <div style="padding:3vh 2.5vw;background:rgba(255,255,255,.05);border-top:5px solid var(--fm-orange);display:flex;flex-direction:column">
+      <div style="font-family:var(--mono);font-size:.75rem;letter-spacing:.2em;color:var(--fm-light-blue);text-transform:uppercase;font-weight:700">Right now</div>
+      <div style="font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--fm-orange);margin-top:.6rem">Enforcement</div>
+      <p style="margin-top:1rem;color:var(--fm-warm-gray)">Removing 5–12% of capacity. Tightening supply. Raising rates. Rewarding the compliant.</p>
+      <div style="margin-top:auto;padding-top:1.5rem;font-family:var(--serif);font-weight:700;color:#fff;font-size:1.4rem">Rates ↑</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 1vw;color:var(--fm-orange)">
+      <div style="font-family:var(--serif);font-size:5vw;font-weight:900;line-height:1">3–5</div>
+      <div style="text-transform:uppercase;letter-spacing:.15em;font-size:.7rem;color:var(--fm-light-blue);font-weight:700;margin-top:.4rem">Year window</div>
+    </div>
+    <div style="padding:3vh 2.5vw;background:rgba(255,255,255,.05);border-top:5px solid var(--fm-orange);display:flex;flex-direction:column">
+      <div style="font-family:var(--mono);font-size:.75rem;letter-spacing:.2em;color:var(--fm-light-blue);text-transform:uppercase;font-weight:700">Right behind it</div>
+      <div style="font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--fm-orange);margin-top:.6rem">Autonomy</div>
+      <p style="margin-top:1rem;color:var(--fm-warm-gray)">9–10 years until the for-hire cost structure becomes economically obsolete on the majority of linehaul.</p>
+      <div style="margin-top:auto;padding-top:1.5rem;font-family:var(--serif);font-weight:700;color:#fff;font-size:1.4rem">Model ends</div>
+    </div>
+  </div>
+  <div class="slide-num">19 / 23</div>
+</section>
+
+<!-- ============== SLIDE 18: AI IS HERE ============== -->
+<section class="slide gradient">
+  <div class="brand-top on-dark"><span class="dot"></span> AI isn't waiting for the truck</div>
+  <span class="eyebrow reveal">It's already in your back office.</span>
+  <h2 class="reveal">AI is here. The 10× reward is for early adopters.</h2>
+  <div class="ai-grid reveal-3">
+    <div class="ai-card"><div class="icon">$</div><h5>Pricing</h5><p>AI-driven RFP response eliminates information asymmetry between you and the shipper.</p></div>
+    <div class="ai-card"><div class="icon">≈</div><h5>Brokerage</h5><p>AI matching compresses broker margins, disintermediates the middle of the load board.</p></div>
+    <div class="ai-card"><div class="icon">⚙</div><h5>Operations</h5><p>Automated dispatch, predictive maintenance, route optimization at the load level.</p></div>
+    <div class="ai-card"><div class="icon">∑</div><h5>Finance</h5><p>Load-level profitability visible in real time via Activity-Based Costing.</p></div>
+    <div class="ai-card"><div class="icon">★</div><h5>Compliance</h5><p>MOTUS, ARCHI and AI-powered enforcement tools make it harder to hide.</p></div>
+  </div>
+  <div class="slide-num">20 / 23</div>
+</section>
+
+<!-- ============== SLIDE 19: THREE DOORS ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> What you do with the window</div>
+  <span class="eyebrow reveal">There is no door 4. "Do nothing and hope" is not a strategy.</span>
+  <h2 class="reveal">Three doors. Pick one. Walk through it.</h2>
+  <div class="doors reveal-3">
+    <div class="door">
+      <div class="key">A</div>
+      <h3>Extract</h3>
+      <ul>
+        <li>Maximize profitability over 3–5 years</li>
+        <li>Invest in AI and analytics</li>
+        <li>Ride the enforcement-driven rate environment</li>
+        <li>Use cash to fund transition or exit</li>
+      </ul>
+    </div>
+    <div class="door">
+      <div class="key">B</div>
+      <h3>Evolve</h3>
+      <ul>
+        <li>Shift to segments autonomy can't reach</li>
+        <li>Specialized · local · regional · final mile</li>
+        <li>Invest in high-touch capabilities</li>
+        <li>Become the carrier that survives</li>
+      </ul>
+    </div>
+    <div class="door">
+      <div class="key">C</div>
+      <h3>Exit</h3>
+      <ul>
+        <li>Sell into the strongest valuation window in a decade</li>
+        <li>Compliant carriers command premium multiples</li>
+        <li>Window closes as autonomy timelines clarify</li>
+        <li>The best exit is from a position of strength</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-num">21 / 23</div>
+</section>
+
+<!-- ============== SLIDE 20: KNOW YOUR NUMBERS ============== -->
+<section class="slide">
+  <div class="brand-top"><span class="dot"></span> The toolkit for any door</div>
+  <span class="eyebrow reveal">Know your numbers</span>
+  <h2 class="reveal">You survived on grit. You will thrive on data.</h2>
+  <p class="lede reveal-2" style="margin-top:1rem">You cannot extract value from what you cannot measure. Whichever door you walk through, the entry condition is the same.</p>
+  <div class="kyn-grid reveal-3">
+    <div class="kyn-col"><span class="kn">01</span><h3><span class="stamp">Load-Level</span>Profitability</h3><p>Activity-based costing that allocates every dollar to the load that caused it. Not averages. Not estimates. Actuals — across variable, overhead, pre-standard, toll, and trailer pool.</p><span class="pill">FMOR · COR · IBOR · OBOR</span></div>
+    <div class="kyn-col"><span class="kn">02</span><h3><span class="stamp">Network</span>Visibility</h3><p>Which lanes, customers, market areas and freight types generate margin and which destroy it. Power lanes, repeat lanes, and spider lanes — distinguished, not averaged together.</p><span class="pill">MapLedger · FreightMath</span></div>
+    <div class="kyn-col"><span class="kn">03</span><h3><span class="stamp">Pricing</span>Intelligence</h3><p>The ability to bid with confidence because you know your floor — not because you guessed at it. Rate-Haul Ratio + Expected RPM Curve, embedded in workflow.</p><span class="pill">FreightMarks · BidRight</span></div>
+  </div>
+  <div class="slide-num">22 / 23</div>
+  <div class="fm-footer">FREIGHT<span class="b">MATH</span> — not Emotion</div>
+</section>
+
+<!-- ============== SLIDE 21: CLOSING ============== -->
+<section class="slide gradient">
+  <div class="brand-top on-dark"><span class="dot"></span> Close</div>
+  <div class="close">
+    <p class="reveal">You carried proper insurance. You employed your drivers. You maintained your equipment. You paid your taxes. You competed against operators who did none of that — <strong>for 13 quarters.</strong></p>
+    <p class="reveal-2"><strong>You didn't just survive. You proved your model works.</strong></p>
+    <div class="punch reveal-3">Now it's time to <span>recoup.</span><br>The market is finally <span>working in your favour.</span></div>
+    <div style="margin-top:2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5vw" class="reveal-4">
+      <div style="padding:1.2rem 1.5rem;background:rgba(255,255,255,.08);border-left:4px solid var(--fm-orange)">
+        <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700;margin-bottom:.5rem">Rate discipline</div>
+        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--fm-white)">Hold your floor. The compliant are in control now.</div>
+      </div>
+      <div style="padding:1.2rem 1.5rem;background:rgba(255,255,255,.08);border-left:4px solid var(--fm-orange)">
+        <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700;margin-bottom:.5rem">Network discipline</div>
+        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--fm-white)">Build back on profitable freight. Not just any freight.</div>
+      </div>
+      <div style="padding:1.2rem 1.5rem;background:rgba(255,255,255,.08);border-left:4px solid var(--fm-orange)">
+        <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-light-blue);font-weight:700;margin-bottom:.5rem">Know your numbers</div>
+        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--fm-white)">You earned this window. Don't leave margin on the table.</div>
+      </div>
+    </div>
+    <div class="signoff reveal-4" style="margin-top:1.5rem">Chris Henry · KSM Transport Advisors · FreightMath, not Emotion.</div>
+  </div>
+  <div class="slide-num">23 / 23</div>
+</section>
+
+</div>
+
+<div class="helper">← → · Space · Click · PageUp/Down</div>
+<div class="nav-controls">
+  <button class="nav-btn" id="prev" title="Previous (←)">‹</button>
+  <button class="nav-btn" id="next" title="Next (→)">›</button>
+</div>
+
+<script>
+(function(){
+  const LOGO_URL = 'https://info.ksmcpa.com/hubfs/FreightMath/Images/KSM_FM_Logo_RGB_Color.png';
+  // Inject FM logo into every slide
+  document.querySelectorAll('.slide').forEach(slide => {
+    const logo = document.createElement('div');
+    logo.className = 'fm-logo';
+    logo.innerHTML = `<img src="${LOGO_URL}" alt="FreightMath by KSM Transport Advisors">`;
+    slide.appendChild(logo);
+  });
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let cur = 0;
+  const progress = document.getElementById('progress');
+  function show(i){
+    if(i<0)i=0;if(i>=total)i=total-1;
+    slides[cur].classList.remove('active');
+    cur = i;
+    slides[cur].classList.add('active');
+    progress.style.width = (((cur+1)/total)*100)+'%';
+    runEntryAnimations(slides[cur]);
+  }
+  function next(){show(cur+1)}
+  function prev(){show(cur-1)}
+
+  document.addEventListener('keydown',e=>{
+    // Clicker presenters typically map to ArrowRight/ArrowLeft, PageDown/PageUp,
+    // Space (next), and B/. for blank-screen — we treat any forward key as next.
+    if(['ArrowRight','PageDown','Space',' ','Enter','n','N'].includes(e.key)){e.preventDefault();next()}
+    else if(['ArrowLeft','PageUp','Backspace','p','P'].includes(e.key)){e.preventDefault();prev()}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(total-1)}
+    else if(e.key==='f'||e.key==='F'){toggleFs()}
+  });
+  document.addEventListener('click',e=>{
+    if(e.target.closest('input, button, .door, .enforce-card, .nav-controls, .helper'))return;
+    next();
+  });
+  document.getElementById('next').addEventListener('click',e=>{e.stopPropagation();next()});
+  document.getElementById('prev').addEventListener('click',e=>{e.stopPropagation();prev()});
+  function toggleFs(){
+    if(!document.fullscreenElement){document.documentElement.requestFullscreen()}else{document.exitFullscreen()}
+  }
+
+  // Initial
+  progress.style.width = (1/total*100)+'%';
+  runEntryAnimations(slides[0]);
+
+  // Counters + bar fills
+  function runEntryAnimations(slide){
+    slide.querySelectorAll('[data-counter]').forEach(el=>{
+      const target = parseFloat(el.dataset.counter);
+      const dur = parseInt(el.dataset.duration||'1200',10);
+      const suffix = el.dataset.suffix||'';
+      const start = performance.now();
+      function tick(now){
+        const t = Math.min(1,(now-start)/dur);
+        const v = Math.round(target*easeOut(t));
+        el.textContent = v+suffix;
+        if(t<1)requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+    slide.querySelectorAll('.hhi-bar .fill').forEach(el=>{
+      const w = el.dataset.w||'0';
+      el.style.width='0%';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=w+'%'}));
+    });
+    if(slide.querySelector('#rhrChart')&&!slide.dataset.chart){
+      slide.dataset.chart='1';
+      buildRHR();
+    }
+  }
+  function easeOut(t){return 1-Math.pow(1-t,3)}
+
+  // Compliance Gap Calculator
+  const cgT = document.getElementById('cg-trucks');
+  const cgM = document.getElementById('cg-miles');
+  const cgG = document.getElementById('cg-gap');
+  const cgY = document.getElementById('cg-years');
+  function fmt$(n){
+    if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
+    if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';
+    if(n>=1e3)return '$'+(n/1e3).toFixed(0)+'K';
+    return '$'+Math.round(n).toLocaleString();
+  }
+  function fmtNum(n){
+    if(n>=1e9)return (n/1e9).toFixed(2)+'B';
+    if(n>=1e6)return (n/1e6).toFixed(2)+'M';
+    if(n>=1e3)return (n/1e3).toFixed(0)+'K';
+    return Math.round(n).toLocaleString();
+  }
+  function recalcCG(){
+    const t = +cgT.value, m = +cgM.value, g = +cgG.value, y = +cgY.value;
+    document.getElementById('cg-trucks-v').textContent = t+' truck'+(t===1?'':'s');
+    document.getElementById('cg-miles-v').textContent = m.toLocaleString();
+    document.getElementById('cg-gap-v').textContent = '$'+g.toFixed(2);
+    document.getElementById('cg-years-v').textContent = y+' yrs';
+    const annualMiles = t*m*52;
+    const annualGap = annualMiles*g;
+    const totalGap = annualGap*y;
+    const perTruck = annualGap/t;
+    document.getElementById('cg-output').textContent = fmt$(totalGap);
+    document.getElementById('cg-annual').textContent = fmt$(annualGap);
+    document.getElementById('cg-miles-total').textContent = fmtNum(annualMiles*y);
+    document.getElementById('cg-per-truck').textContent = '$'+Math.round(perTruck).toLocaleString();
+  }
+  [cgT,cgM,cgG,cgY].forEach(el=>el&&el.addEventListener('input',recalcCG));
+  recalcCG();
+
+  // RHR Chart
+  let rhrChart;
+  function buildRHR(){
+    const ctx = document.getElementById('rhrChart');
+    if(!ctx) return;
+    const expected = [
+      {x:150,y:3.85},{x:250,y:3.20},{x:350,y:2.85},{x:500,y:2.55},{x:700,y:2.30},
+      {x:900,y:2.15},{x:1100,y:2.05},{x:1400,y:1.95},{x:1800,y:1.88},{x:2200,y:1.82}
+    ];
+    // Sample carrier loads — some above, some below
+    const overpriced = [
+      {x:220,y:3.90},{x:380,y:3.05},{x:560,y:2.90},{x:780,y:2.55},{x:1100,y:2.20},
+      {x:1500,y:2.05},{x:1850,y:1.95}
+    ];
+    const underpriced = [
+      {x:180,y:2.55},{x:320,y:2.40},{x:460,y:2.20},{x:680,y:1.90},
+      {x:920,y:1.75},{x:1240,y:1.65},{x:1680,y:1.55}
+    ];
+    rhrChart = new Chart(ctx,{
+      type:'scatter',
+      data:{datasets:[
+        {label:'Expected RPM Curve',type:'line',data:expected,borderColor:'#0A2463',borderWidth:3,backgroundColor:'transparent',pointRadius:0,tension:.4,order:1},
+        {label:'In-Market / Above Curve',data:overpriced,backgroundColor:'#2C78C9',pointRadius:6,pointHoverRadius:9,borderColor:'#0A2463',borderWidth:1.5,order:2},
+        {label:'Below Curve · Underpriced',data:underpriced,backgroundColor:'#E26E17',pointRadius:6,pointHoverRadius:9,borderColor:'#a64f0f',borderWidth:1.5,order:3}
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{
+          legend:{position:'bottom',labels:{font:{family:'Public Sans',size:11},color:'#0A2463',usePointStyle:true}},
+          tooltip:{callbacks:{label:c=>c.parsed.x+' mi · $'+c.parsed.y.toFixed(2)+'/mi'}}
+        },
+        scales:{
+          x:{title:{display:true,text:'Length of Haul (miles)',color:'#6E6E6E',font:{family:'Public Sans',size:11,weight:'700'}},type:'linear',min:0,max:2400,grid:{color:'#DCDAD8'},ticks:{color:'#6E6E6E',font:{family:'JetBrains Mono',size:10}}},
+          y:{title:{display:true,text:'All-In Rate Per Mile ($)',color:'#6E6E6E',font:{family:'Public Sans',size:11,weight:'700'}},min:1.4,max:4.2,grid:{color:'#DCDAD8'},ticks:{color:'#6E6E6E',font:{family:'JetBrains Mono',size:10},callback:v=>'$'+v.toFixed(2)}}
+        }
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
