@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>KSM Trucking Business Owners &amp; Leaders Roundtable — May 14, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --fm-navy:#0A2463;
+  --fm-blue:#2C78C9;
+  --fm-orange:#E26E17;
+  --fm-black:#000000;
+  --fm-gray:#6E6E6E;
+  --fm-light-blue:#96BCE4;
+  --fm-mid-blue:#8592B1;
+  --fm-light-gray:#F5F5F5;
+  --fm-warm-gray:#DCDAD8;
+  --fm-light-orange:#F1B78B;
+  --fm-white:#FFFFFF;
+  --serif: 'DM Sans', system-ui, sans-serif;
+  --sans: 'Public Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:#000;color:var(--fm-black);font-family:var(--sans);overflow:hidden}
+.deck{position:fixed;inset:0;overflow:hidden;background:#000}
+.slide{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:none;
+  background:var(--fm-white);
+  padding:8vh 7vw 7vh;
+  overflow:hidden;
+  opacity:0;
+  transition:opacity .35s ease;
+}
+.slide.active{display:flex;flex-direction:column;opacity:1}
+.slide.dark{background:var(--fm-navy);color:var(--fm-white)}
+.slide.gradient{background:linear-gradient(135deg,var(--fm-navy) 0%,#0c1d4d 60%,#08184a 100%);color:var(--fm-white)}
+.slide.lightgray{background:var(--fm-light-gray)}
+
+/* Progress bar */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--fm-orange);width:0;transition:width .4s ease;z-index:100}
+
+/* Brand chrome */
+.brand-top{position:absolute;top:2.2vh;left:7vw;display:flex;align-items:center;gap:14px;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-blue);font-weight:700;font-family:var(--sans)}
+.brand-top.on-dark{color:var(--fm-light-blue)}
+.brand-top .dot{width:8px;height:8px;background:var(--fm-orange);border-radius:50%}
+.slide-num{position:absolute;bottom:2vh;right:7vw;font-family:var(--mono);font-size:.75rem;color:var(--fm-gray);letter-spacing:.1em}
+.slide.dark .slide-num,.slide.gradient .slide-num{color:var(--fm-light-blue);opacity:.7}
+.slide-meta{position:absolute;bottom:2vh;left:7vw;font-size:.72rem;color:var(--fm-gray);letter-spacing:.04em}
+.slide.dark .slide-meta,.slide.gradient .slide-meta{color:var(--fm-light-blue);opacity:.7}
+
+/* FreightMath logo */
+.fm-logo{position:absolute;top:1.6vh;right:7vw;z-index:10;line-height:0}
+.fm-logo img{height:32px;width:auto;object-fit:contain;opacity:.85;transition:opacity .2s}
+.fm-logo:hover img{opacity:1}
+.slide.gradient .fm-logo img,.slide.dark .fm-logo img{opacity:.8;filter:brightness(0) invert(1)}
+.title-slide .fm-logo{top:auto;bottom:8vh;right:7vw}
+.title-slide .fm-logo img{height:56px;opacity:1;filter:brightness(0) invert(1)}
+
+/* Typography */
+h1,h2,h3,h4{font-family:var(--serif);margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.05}
+h1{font-size:5.5vw;font-weight:300}
+h1 strong{font-weight:900;color:var(--fm-orange)}
+h2{font-size:3.1vw;font-weight:700;color:var(--fm-navy)}
+.dark h2,.gradient h2{color:var(--fm-white)}
+h3{font-size:1.45rem;color:var(--fm-blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.dark h3,.gradient h3{color:var(--fm-light-blue)}
+h4{font-size:1rem;text-transform:uppercase;letter-spacing:.18em;color:var(--fm-gray);font-weight:700}
+p{font-family:var(--sans);font-size:1rem;line-height:1.55;margin:0;color:var(--fm-black)}
+.dark p,.gradient p{color:var(--fm-warm-gray)}
+.lede{font-size:1.25rem;font-weight:400;color:var(--fm-gray);max-width:60ch}
+.dark .lede,.gradient .lede{color:var(--fm-light-blue)}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.22em;color:var(--fm-orange);font-weight:700;margin-bottom:.9rem;display:inline-block}
+
+/* Title slide */
+.title{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative}
+.title h1{font-size:6.2vw;line-height:1.04;max-width:90%}
+.title .sub{margin-top:2.5rem;font-size:1.5rem;color:var(--fm-light-blue);font-family:var(--sans);font-weight:400;letter-spacing:.04em}
+.title .author{margin-top:3rem;display:flex;align-items:center;gap:18px}
+.title .author .who{display:flex;flex-direction:column}
+.title .author .who .n{font-weight:700;color:var(--fm-white);font-size:1.05rem;letter-spacing:.02em}
+.title .author .who .r{color:var(--fm-light-blue);font-size:.9rem;letter-spacing:.1em;text-transform:uppercase}
+.title .stamp{position:absolute;left:7vw;bottom:8vh;text-align:left;color:var(--fm-light-blue);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.6}
+.title .stamp strong{color:var(--fm-orange)}
+
+/* Constellation animation */
+.constellation{position:absolute;inset:0;pointer-events:none;opacity:.55}
+.constellation circle{fill:var(--fm-blue)}
+.constellation circle.acc{fill:var(--fm-orange)}
+.constellation line{stroke:var(--fm-blue);stroke-width:.4;opacity:.35}
+
+/* Reveal animations */
+.reveal,.reveal-2,.reveal-3,.reveal-4{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
+.slide.active .reveal{opacity:1;transform:none;transition-delay:.1s}
+.slide.active .reveal-2{opacity:1;transform:none;transition-delay:.25s}
+.slide.active .reveal-3{opacity:1;transform:none;transition-delay:.4s}
+.slide.active .reveal-4{opacity:1;transform:none;transition-delay:.55s}
+
+/* Big stat */
+.big-stat{font-family:var(--serif);font-size:18vw;line-height:.9;font-weight:900;letter-spacing:-.04em;color:var(--fm-navy)}
+.dark .big-stat,.gradient .big-stat{color:var(--fm-orange)}
+.big-stat .unit{font-size:.25em;color:var(--fm-gray);font-weight:400}
+.stat-label{font-family:var(--sans);text-transform:uppercase;letter-spacing:.2em;color:var(--fm-orange);font-weight:700;font-size:.85rem;margin-bottom:1rem}
+
+/* Two-column compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2vw;margin-top:1.5vh;flex:1}
+.compare .col{padding:2.5vh 2.5vw;border-top:5px solid var(--fm-warm-gray);background:var(--fm-light-gray)}
+.compare .col.bad{border-top-color:var(--fm-orange);background:#fff3e9}
+.compare .col.good{border-top-color:var(--fm-blue);background:#eaf3fc}
+.compare .col h4{margin-bottom:1.5rem;color:var(--fm-gray)}
+.compare .col.good h4{color:var(--fm-blue)}
+.compare .col.bad h4{color:var(--fm-orange)}
+.compare ul{list-style:none;padding:0;margin:0;font-family:var(--sans)}
+.compare li{padding:.55rem 0;font-size:1rem;border-bottom:1px solid var(--fm-warm-gray);display:flex;align-items:flex-start;gap:.6rem}
+.compare li:last-child{border-bottom:none}
+.compare li:before{content:"";width:6px;height:6px;background:var(--fm-blue);border-radius:50%;margin-top:.55rem;flex-shrink:0}
+.compare .bad li:before{background:var(--fm-orange)}
+
+/* Card grid */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5vh 1.5vw;margin-top:1.5vh;flex:1}
+.card{background:var(--fm-light-gray);padding:2.5vh 2vw;border-top:4px solid var(--fm-blue)}
+.card.accent{border-top-color:var(--fm-orange)}
+.card h4{margin-bottom:.8rem}
+.card p{font-size:.95rem;color:var(--fm-gray)}
+
+/* Nav controls */
+.helper{position:fixed;bottom:1.2vh;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.35);letter-spacing:.15em;pointer-events:none;z-index:200}
+.nav-controls{position:fixed;bottom:1.5vh;right:2vw;display:flex;gap:.5rem;z-index:200}
+.nav-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.nav-btn:hover{background:rgba(255,255,255,.25)}
+
+@media print{html,body{height:auto;overflow:visible}.slide{position:relative;display:block!important;page-break-after:always;height:100vh}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- ============== SLIDE 1: TITLE ============== -->
+<section class="slide gradient title title-slide active">
+  <svg class="constellation" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="200" y1="120" x2="380" y2="280"/><line x1="380" y1="280" x2="560" y2="180"/>
+    <line x1="560" y1="180" x2="780" y2="320"/><line x1="780" y1="320" x2="980" y2="240"/>
+    <line x1="380" y1="280" x2="500" y2="480"/><line x1="500" y1="480" x2="700" y2="540"/>
+    <line x1="700" y1="540" x2="900" y2="460"/><line x1="900" y1="460" x2="780" y2="320"/>
+    <line x1="200" y1="120" x2="500" y2="480"/><line x1="980" y1="240" x2="900" y2="460"/>
+    <line x1="200" y1="120" x2="100" y2="360"/><line x1="100" y1="360" x2="500" y2="480"/>
+    <circle cx="200" cy="120" r="5"/><circle cx="380" cy="280" r="4"/>
+    <circle cx="560" cy="180" r="5" class="acc"/><circle cx="780" cy="320" r="4"/>
+    <circle cx="980" cy="240" r="5"/><circle cx="500" cy="480" r="4" class="acc"/>
+    <circle cx="700" cy="540" r="5"/><circle cx="900" cy="460" r="4"/>
+    <circle cx="100" cy="360" r="3"/>
+  </svg>
+  <div class="brand-top on-dark"><span class="dot"></span> KSM Transport Advisors · Trucking Business Owners &amp; Leaders Roundtable</div>
+  <div class="title">
+    <h1 class="reveal">KSM Trucking<br><strong>Business Owners &amp; Leaders</strong><br>Roundtable</h1>
+    <div class="sub reveal-2">FreightMath, Not Emotion.</div>
+    <div class="author reveal-3">
+      <div class="who">
+        <div class="n">Chris Henry</div>
+        <div class="r">President · KSM Transport Advisors</div>
+      </div>
+    </div>
+    <div class="stamp reveal-4"><strong>May 14, 2026</strong></div>
+  </div>
+  <div class="slide-num">01 / 01</div>
+</section>
+
+
+<!-- ============== SLIDE 2: OR DUMBBELL ============== -->
+<section class="slide lightgray">
+  <div class="brand-top"><span class="dot"></span> FreightMath | Operating Ratio (OR)</div>
+  <span class="eyebrow reveal">Benchmark · Q1 2026 vs. Q1 2025</span>
+  <h2 class="reveal" style="max-width:90%">Operating Ratio — Two Modes Improved. One Slipped.</h2>
+  <p class="lede reveal-2" style="margin-top:.6vh;font-size:.95rem;max-width:75ch">Operating expenses ÷ operating revenue × 100. Below 100 is profitable; lower is better. Each line shows the year-over-year shift for the median FreightMarks Alliance carrier.</p>
+
+  <!-- Dumbbell chart -->
+  <div class="reveal-3" style="margin-top:3vh;flex:1;display:flex;flex-direction:column;justify-content:center;background:var(--fm-white);padding:4vh 4vw 3vh;border-left:5px solid var(--fm-orange)">
+
+    <!-- Axis label -->
+    <div style="display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;margin-bottom:1.2rem;font-family:var(--mono);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fm-gray);font-weight:700">
+      <div></div>
+      <div style="position:relative;height:1rem">
+        <span style="position:absolute;left:0%">100</span>
+        <span style="position:absolute;left:25%">105</span>
+        <span style="position:absolute;left:50%">110</span>
+        <span style="position:absolute;left:75%">115</span>
+        <span style="position:absolute;left:100%;transform:translateX(-100%)">120</span>
+      </div>
+      <div style="text-align:right">YoY Δ</div>
+    </div>
+
+    <!-- Profitability threshold marker -->
+    <div style="display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;position:relative;height:0">
+      <div></div>
+      <div style="position:relative;height:0">
+        <div style="position:absolute;left:0%;top:-.5rem;bottom:-30vh;border-left:2px dashed #2a7a3b;width:0"></div>
+        <div style="position:absolute;left:0%;top:-1.4rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:#2a7a3b;font-weight:700;text-transform:uppercase;transform:translateX(-50%)">Break-even</div>
+      </div>
+      <div></div>
+    </div>
+
+    <!-- ==== Dumbbell rows ==== -->
+    <!-- Scale: 100 -> 0%, 120 -> 100%. So x% = (val - 100) * 5 -->
+
+    <!-- VAN: 107.3 -> 103.5  (improvement) -->
+    <div class="dumbbell" style="display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;padding:1.6vh 0;border-bottom:1px solid var(--fm-light-gray)">
+      <div style="font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--fm-navy);letter-spacing:.02em">Van</div>
+      <div style="position:relative;height:44px">
+        <!-- Track -->
+        <div style="position:absolute;left:0;right:0;top:50%;height:2px;background:var(--fm-light-gray);transform:translateY(-50%)"></div>
+        <!-- Line segment between 2025 (36.5%) and 2026 (17.5%) -->
+        <div style="position:absolute;left:17.5%;width:19%;top:50%;height:6px;background:#2a7a3b;transform:translateY(-50%);border-radius:3px"></div>
+        <!-- 2025 dot (right end) -->
+        <div style="position:absolute;left:36.5%;top:50%;width:18px;height:18px;background:var(--fm-warm-gray);border:3px solid var(--fm-gray);border-radius:50%;transform:translate(-50%,-50%)"></div>
+        <div style="position:absolute;left:36.5%;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.72rem;color:var(--fm-gray);font-weight:700">107.3</div>
+        <div style="position:absolute;left:36.5%;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-gray);font-weight:700">Q1 '25</div>
+        <!-- 2026 dot (left end) -->
+        <div style="position:absolute;left:17.5%;top:50%;width:20px;height:20px;background:var(--fm-blue);border:3px solid var(--fm-navy);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(44,120,201,.18)"></div>
+        <div style="position:absolute;left:17.5%;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.85rem;color:var(--fm-navy);font-weight:700">103.5</div>
+        <div style="position:absolute;left:17.5%;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-navy);font-weight:700">Q1 '26</div>
+      </div>
+      <div style="text-align:right">
+        <div style="display:inline-flex;align-items:baseline;gap:.4rem;background:#e8f3ec;color:#2a7a3b;padding:.4rem .8rem;border-radius:3px;font-family:var(--mono);font-weight:700">
+          <span style="font-size:1.1rem">&#9660;</span>
+          <span style="font-size:1.1rem">3.8</span>
+          <span style="font-size:.7rem;letter-spacing:.1em">PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- REEFER: 115.3 -> 109.1  (biggest improvement) -->
+    <div class="dumbbell" style="display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;padding:1.6vh 0;border-bottom:1px solid var(--fm-light-gray)">
+      <div style="font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--fm-navy);letter-spacing:.02em">Reefer</div>
+      <div style="position:relative;height:44px">
+        <div style="position:absolute;left:0;right:0;top:50%;height:2px;background:var(--fm-light-gray);transform:translateY(-50%)"></div>
+        <!-- 2025 76.5%, 2026 45.5% -->
+        <div style="position:absolute;left:45.5%;width:31%;top:50%;height:6px;background:#2a7a3b;transform:translateY(-50%);border-radius:3px"></div>
+        <div style="position:absolute;left:76.5%;top:50%;width:18px;height:18px;background:var(--fm-warm-gray);border:3px solid var(--fm-gray);border-radius:50%;transform:translate(-50%,-50%)"></div>
+        <div style="position:absolute;left:76.5%;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.72rem;color:var(--fm-gray);font-weight:700">115.3</div>
+        <div style="position:absolute;left:76.5%;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-gray);font-weight:700">Q1 '25</div>
+        <div style="position:absolute;left:45.5%;top:50%;width:20px;height:20px;background:var(--fm-blue);border:3px solid var(--fm-navy);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(44,120,201,.18)"></div>
+        <div style="position:absolute;left:45.5%;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.85rem;color:var(--fm-navy);font-weight:700">109.1</div>
+        <div style="position:absolute;left:45.5%;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-navy);font-weight:700">Q1 '26</div>
+      </div>
+      <div style="text-align:right">
+        <div style="display:inline-flex;align-items:baseline;gap:.4rem;background:#e8f3ec;color:#2a7a3b;padding:.4rem .8rem;border-radius:3px;font-family:var(--mono);font-weight:700">
+          <span style="font-size:1.1rem">&#9660;</span>
+          <span style="font-size:1.1rem">6.2</span>
+          <span style="font-size:.7rem;letter-spacing:.1em">PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLATBED: 107.2 -> 108.1  (DEGRADATION — line points right) -->
+    <div class="dumbbell" style="display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;padding:1.6vh 0">
+      <div style="font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--fm-navy);letter-spacing:.02em">Flatbed</div>
+      <div style="position:relative;height:44px">
+        <div style="position:absolute;left:0;right:0;top:50%;height:2px;background:var(--fm-light-gray);transform:translateY(-50%)"></div>
+        <!-- 2025 36%, 2026 40.5% -->
+        <div style="position:absolute;left:36%;width:4.5%;top:50%;height:6px;background:var(--fm-orange);transform:translateY(-50%);border-radius:3px"></div>
+        <div style="position:absolute;left:36%;top:50%;width:18px;height:18px;background:var(--fm-warm-gray);border:3px solid var(--fm-gray);border-radius:50%;transform:translate(-50%,-50%)"></div>
+        <div style="position:absolute;left:36%;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.72rem;color:var(--fm-gray);font-weight:700">107.2</div>
+        <div style="position:absolute;left:36%;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-gray);font-weight:700">Q1 '25</div>
+        <div style="position:absolute;left:40.5%;top:50%;width:20px;height:20px;background:var(--fm-orange);border:3px solid #a64f0f;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(226,110,23,.22)"></div>
+        <div style="position:absolute;left:40.5%;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.85rem;color:var(--fm-orange);font-weight:700">108.1</div>
+        <div style="position:absolute;left:40.5%;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fm-orange);font-weight:700">Q1 '26</div>
+      </div>
+      <div style="text-align:right">
+        <div style="display:inline-flex;align-items:baseline;gap:.4rem;background:#fff3e9;color:var(--fm-orange);padding:.4rem .8rem;border-radius:3px;font-family:var(--mono);font-weight:700">
+          <span style="font-size:1.1rem">&#9650;</span>
+          <span style="font-size:1.1rem">0.9</span>
+          <span style="font-size:.7rem;letter-spacing:.1em">PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div style="margin-top:2.4vh;padding-top:1.5vh;border-top:1px solid var(--fm-warm-gray);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fm-gray);font-weight:700">
+        <div style="display:flex;gap:1.8rem;align-items:center">
+          <span style="display:inline-flex;align-items:center;gap:.45rem"><span style="width:10px;height:10px;background:var(--fm-warm-gray);border:2px solid var(--fm-gray);border-radius:50%;display:inline-block"></span>Q1 2025</span>
+          <span style="display:inline-flex;align-items:center;gap:.45rem"><span style="width:12px;height:12px;background:var(--fm-blue);border:2px solid var(--fm-navy);border-radius:50%;display:inline-block"></span>Q1 2026 — Improved</span>
+          <span style="display:inline-flex;align-items:center;gap:.45rem"><span style="width:12px;height:12px;background:var(--fm-orange);border:2px solid #a64f0f;border-radius:50%;display:inline-block"></span>Q1 2026 — Worsened</span>
+        </div>
+        <div style="color:var(--fm-navy)">← Lower = More Profitable</div>
+    </div>
+
+  </div>
+
+  <div class="slide-num">02 / 02</div>
+  <div class="slide-meta">Source: FreightMarks Alliance · YTD 2026 Benchmarks · Median values shown</div>
+</section>
+
+</div>
+
+<div class="helper">← → · Space · Click · PageUp/Down</div>
+<div class="nav-controls">
+  <button class="nav-btn" id="prev" title="Previous (←)">‹</button>
+  <button class="nav-btn" id="next" title="Next (→)">›</button>
+</div>
+
+<script>
+(function(){
+  const LOGO_URL = 'https://info.ksmcpa.com/hubfs/FreightMath/Images/KSM_FM_Logo_RGB_Color.png';
+  document.querySelectorAll('.slide').forEach(slide => {
+    const logo = document.createElement('div');
+    logo.className = 'fm-logo';
+    logo.innerHTML = `<img src="${LOGO_URL}" alt="FreightMath by KSM Transport Advisors">`;
+    slide.appendChild(logo);
+  });
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let cur = 0;
+  const progress = document.getElementById('progress');
+
+  function updateSlideNums(){
+    slides.forEach((s,i)=>{
+      const n = s.querySelector('.slide-num');
+      if(n) n.textContent = String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+    });
+  }
+
+  function show(i){
+    if(i<0)i=0;if(i>=total)i=total-1;
+    slides[cur].classList.remove('active');
+    cur=i;
+    slides[cur].classList.add('active');
+    progress.style.width=(((cur+1)/total)*100)+'%';
+    runEntryAnimations(slides[cur]);
+  }
+  function next(){show(cur+1)}
+  function prev(){show(cur-1)}
+
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown','Space',' ','Enter','n','N'].includes(e.key)){e.preventDefault();next()}
+    else if(['ArrowLeft','PageUp','Backspace','p','P'].includes(e.key)){e.preventDefault();prev()}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(total-1)}
+    else if(e.key==='f'||e.key==='F'){toggleFs()}
+  });
+  document.addEventListener('click',e=>{
+    if(e.target.closest('input, button, .nav-controls, .helper'))return;
+    next();
+  });
+  document.getElementById('next').addEventListener('click',e=>{e.stopPropagation();next()});
+  document.getElementById('prev').addEventListener('click',e=>{e.stopPropagation();prev()});
+
+  function toggleFs(){
+    if(!document.fullscreenElement){document.documentElement.requestFullscreen()}
+    else{document.exitFullscreen()}
+  }
+
+  function runEntryAnimations(slide){
+    slide.querySelectorAll('[data-counter]').forEach(el=>{
+      const target=parseFloat(el.dataset.counter);
+      const dur=parseInt(el.dataset.duration||'1200',10);
+      const suffix=el.dataset.suffix||'';
+      const start=performance.now();
+      function tick(now){
+        const t=Math.min(1,(now-start)/dur);
+        const v=Math.round(target*easeOut(t));
+        el.textContent=v+suffix;
+        if(t<1)requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+    slide.querySelectorAll('.hhi-bar .fill').forEach(el=>{
+      const w=el.dataset.w||'0';
+      el.style.width='0%';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=w+'%'}));
+    });
+  }
+  function easeOut(t){return 1-Math.pow(1-t,3)}
+
+  updateSlideNums();
+  progress.style.width=(1/total*100)+'%';
+  runEntryAnimations(slides[0]);
+})();
+</script>
+</body>
+</html>
