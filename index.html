@@ -396,26 +396,27 @@ p{font-family:var(--sans);font-size:1rem;line-height:1.55;margin:0;color:var(--f
 .bm-tile{background:rgba(255,255,255,.06);border-left:3px solid var(--fm-orange);padding:1.3vh 1vw;font-family:var(--sans);font-size:.85rem;font-weight:600;color:var(--fm-white);letter-spacing:.01em;line-height:1.3}
 .fm-marks-slide.lightgray{background:var(--fm-light-gray)}
 .bm-slide .bm-card{background:var(--fm-white);border-left:5px solid var(--fm-orange);padding:3.5vh 3.5vw 3vh;flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:2vh}
-.bm-row{display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;padding:1.6vh 0;border-bottom:1px solid var(--fm-light-gray)}
+.bm-row{display:grid;grid-template-columns:120px 1fr 200px;gap:1.5vw;align-items:center;padding:2.4vh 0;border-bottom:1px solid var(--fm-light-gray)}
 .bm-row:last-of-type{border-bottom:none}
 .bm-row .mode{font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--fm-navy);letter-spacing:.02em}
-.bm-track-wrap{position:relative;height:44px}
+.bm-track-wrap{position:relative;height:48px}
 .bm-track{position:absolute;left:0;right:0;top:50%;height:2px;background:var(--fm-light-gray);transform:translateY(-50%)}
-.bm-bar{position:absolute;top:50%;height:6px;transform:translateY(-50%);border-radius:3px}
+.bm-bar{position:absolute;top:50%;height:6px;transform:translateY(-50%);border-radius:3px;min-width:4px}
 .bm-bar.improved{background:#2a7a3b}
 .bm-bar.worsened{background:var(--fm-orange)}
-.bm-dot{position:absolute;top:50%;border-radius:50%;transform:translate(-50%,-50%)}
+.bm-dot{position:absolute;top:50%;border-radius:50%;transform:translate(-50%,-50%);z-index:2}
 .bm-dot.past{width:18px;height:18px;background:var(--fm-warm-gray);border:3px solid var(--fm-gray)}
-.bm-dot.now-good{width:20px;height:20px;background:var(--fm-blue);border:3px solid var(--fm-navy);box-shadow:0 0 0 3px rgba(44,120,201,.18)}
-.bm-dot.now-bad{width:20px;height:20px;background:var(--fm-orange);border:3px solid #a64f0f;box-shadow:0 0 0 3px rgba(226,110,23,.22)}
-.bm-val{position:absolute;top:calc(50% + 16px);transform:translateX(-50%);font-family:var(--mono);font-size:.78rem;font-weight:700;white-space:nowrap}
-.bm-val.past{color:var(--fm-gray)}
-.bm-val.now-good{color:var(--fm-navy)}
-.bm-val.now-bad{color:var(--fm-orange)}
-.bm-tag{position:absolute;top:calc(50% - 28px);transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;white-space:nowrap}
-.bm-tag.past{color:var(--fm-gray)}
-.bm-tag.now-good{color:var(--fm-navy)}
-.bm-tag.now-bad{color:var(--fm-orange)}
+.bm-dot.now-good{width:20px;height:20px;background:var(--fm-blue);border:3px solid var(--fm-navy);box-shadow:0 0 0 3px rgba(44,120,201,.18);z-index:3}
+.bm-dot.now-bad{width:20px;height:20px;background:var(--fm-orange);border:3px solid #a64f0f;box-shadow:0 0 0 3px rgba(226,110,23,.22);z-index:3}
+/* Past value ABOVE the dot; Current value BELOW the dot — different rows, never collide */
+.bm-val{position:absolute;transform:translateX(-50%);font-family:var(--mono);font-size:.78rem;font-weight:700;white-space:nowrap}
+.bm-val.past{top:calc(50% - 26px);color:var(--fm-gray)}
+.bm-val.now-good{top:calc(50% + 22px);color:var(--fm-navy)}
+.bm-val.now-bad{top:calc(50% + 22px);color:var(--fm-orange)}
+/* %-of-rev annotations: past goes above the past value, now goes below the now value */
+.bm-note{position:absolute;transform:translateX(-50%);font-family:var(--mono);font-size:.58rem;font-weight:600;color:var(--fm-gray);opacity:.8;white-space:nowrap;letter-spacing:.02em}
+.bm-note.past{top:calc(50% - 44px)}
+.bm-note.now{top:calc(50% + 40px)}
 .bm-delta{display:inline-flex;align-items:baseline;gap:.4rem;padding:.4rem .8rem;border-radius:3px;font-family:var(--mono);font-weight:700}
 .bm-delta.improved{background:#e8f3ec;color:#2a7a3b}
 .bm-delta.worsened{background:#fff3e9;color:var(--fm-orange)}
@@ -1366,21 +1367,20 @@ p{font-family:var(--sans);font-size:1rem;line-height:1.55;margin:0;color:var(--f
         const deltaArrow = improved === null
           ? (v.q126 > v.q125 ? '▲' : v.q126 < v.q125 ? '▼' : '—')
           : (v.q126 < v.q125 ? '▼' : '▲');
-        const note26 = v.note26 ? `<div style="position:absolute;top:calc(50% + 32px);left:${p26}%;transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;color:var(--fm-gray);font-weight:600;white-space:nowrap;opacity:.8">${v.note26}</div>` : '';
-        const note25 = v.note25 ? `<div style="position:absolute;top:calc(50% + 32px);left:${p25}%;transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;color:var(--fm-gray);font-weight:600;white-space:nowrap;opacity:.8">${v.note25}</div>` : '';
+        const note25 = v.note25 ? `<div class="bm-note past" style="left:${p25}%">${v.note25}</div>` : '';
+        const note26 = v.note26 ? `<div class="bm-note now" style="left:${p26}%">${v.note26}</div>` : '';
         return `
           <div class="bm-row">
             <div class="mode">${v.mode}</div>
             <div class="bm-track-wrap">
               <div class="bm-track"></div>
               <div class="bm-bar ${barClass}" style="left:${barLeft}%;width:${barWidth}%"></div>
-              <div class="bm-dot past" style="left:${p25}%"></div>
-              <div class="bm-tag past" style="left:${p25}%">Q1 '25</div>
+              ${note25}
               <div class="bm-val past" style="left:${p25}%">${m.fmt(v.q125)}</div>
+              <div class="bm-dot past" style="left:${p25}%"></div>
               <div class="bm-dot ${nowClass}" style="left:${p26}%"></div>
-              <div class="bm-tag ${nowClass}" style="left:${p26}%">Q1 '26</div>
               <div class="bm-val ${nowClass}" style="left:${p26}%">${m.fmt(v.q126)}</div>
-              ${note26}${note25}
+              ${note26}
             </div>
             <div style="text-align:right">
               <div class="bm-delta ${deltaClass}">
